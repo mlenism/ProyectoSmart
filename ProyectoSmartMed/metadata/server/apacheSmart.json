@@ -1,0 +1,13 @@
+{
+  "webAppName": "",
+  "sslMode": false,
+  "proxyPort": "",
+  "hostname": "localhost",
+  "nonProxyHosts": "",
+  "overrideExistingProperties": false,
+  "password": "Encrypted 2be98afc86aa7f2e4cb79ce71da9fa6d4",
+  "port": "8180",
+  "name": "apacheSmart",
+  "proxyHostname": "",
+  "username": "admin"
+}

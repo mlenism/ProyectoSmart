@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+  <info>
+    <name>FINAL_MEDIDORES</name>
+    <name_sync_with_filename>Y</name_sync_with_filename>
+    <description/>
+    <extended_description/>
+    <pipeline_version/>
+    <pipeline_type>Normal</pipeline_type>
+    <parameters>
+    </parameters>
+    <capture_transform_performance>N</capture_transform_performance>
+    <transform_performance_capturing_delay>1000</transform_performance_capturing_delay>
+    <transform_performance_capturing_size_limit>100</transform_performance_capturing_size_limit>
+    <created_user>-</created_user>
+    <created_date>2024/07/29 14:23:33.019</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2024/07/29 14:23:33.019</modified_date>
+  </info>
+  <notepads>
+  </notepads>
+  <order>
+    <hop>
+      <from>STG7_MEDIDORES</from>
+      <to>FINAL_MEDIDORES</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>FINAL_MEDIDORES</from>
+      <to>Execute SQL script</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <transform>
+    <name>Execute SQL script</name>
+    <type>ExecSql</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <arguments>
+</arguments>
+    <connection>POSTGRES_SMART</connection>
+    <delete_field/>
+    <execute_each_row>N</execute_each_row>
+    <insert_field/>
+    <quoteString>N</quoteString>
+    <read_field/>
+    <replace_variables>N</replace_variables>
+    <set_params>N</set_params>
+    <single_statement>N</single_statement>
+    <sql>UPDATE smart_med.final_medidores f
+SET status = 'NO OPERATIVO',
+    status_update_date = NOW() AT TIME ZONE 'America/Lima'
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM smart_med.stg7_medidores s
+    WHERE f.meter_code = s.meter_code
+) AND f.status != 'NO OPERATIVO';
+
+UPDATE smart_med.final_medidores f
+SET creator = s.creator,  -- Actualizar el campo creator desde stg7_medidores
+    meter_id = s.meter_id -- Actualizar el campo meter_id desde stg7_medidores
+FROM smart_med.stg7_medidores s
+WHERE f.meter_code = s.meter_code;
+
+UPDATE smart_med.final_medidores f
+SET status = 'NORMAL',
+    status_update_date = NOW() AT TIME ZONE 'America/Lima'
+WHERE status = 'NO OPERATIVO'
+AND EXISTS (
+    SELECT 1
+    FROM smart_med.stg7_medidores s
+    WHERE f.meter_code = s.meter_code
+);
+</sql>
+    <update_field/>
+    <attributes/>
+    <GUI>
+      <xloc>800</xloc>
+      <yloc>224</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>FINAL_MEDIDORES</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <commit>1000</commit>
+    <connection>POSTGRES_SMART</connection>
+    <fields>
+      <field>
+        <column_name>meter_id</column_name>
+        <stream_name>meter_id</stream_name>
+      </field>
+      <field>
+        <column_name>meter_code</column_name>
+        <stream_name>meter_code</stream_name>
+      </field>
+      <field>
+        <column_name>meter_type</column_name>
+        <stream_name>meter_type</stream_name>
+      </field>
+      <field>
+        <column_name>model_id</column_name>
+        <stream_name>model_id</stream_name>
+      </field>
+      <field>
+        <column_name>dept_code</column_name>
+        <stream_name>dept_code</stream_name>
+      </field>
+      <field>
+        <column_name>region_code</column_name>
+        <stream_name>region_code</stream_name>
+      </field>
+      <field>
+        <column_name>measuring_point_id</column_name>
+        <stream_name>measuring_point_id</stream_name>
+      </field>
+      <field>
+        <column_name>creator</column_name>
+        <stream_name>creator</stream_name>
+      </field>
+      <field>
+        <column_name>create_time_id</column_name>
+        <stream_name>create_time_id</stream_name>
+      </field>
+      <field>
+        <column_name>create_ts_id</column_name>
+        <stream_name>create_ts_id</stream_name>
+      </field>
+      <field>
+        <column_name>rm_type_code</column_name>
+        <stream_name>rm_type_code</stream_name>
+      </field>
+      <field>
+        <column_name>template_id</column_name>
+        <stream_name>template_id</stream_name>
+      </field>
+      <field>
+        <column_name>have_valve</column_name>
+        <stream_name>have_valve</stream_name>
+      </field>
+      <field>
+        <column_name>nbiot_devide_id</column_name>
+        <stream_name>nbiot_devide_id</stream_name>
+      </field>
+      <field>
+        <column_name>latitude</column_name>
+        <stream_name>latitude</stream_name>
+      </field>
+      <field>
+        <column_name>longitude</column_name>
+        <stream_name>longitude</stream_name>
+      </field>
+      <field>
+        <column_name>tapa_id</column_name>
+        <stream_name>tapa_id</stream_name>
+      </field>
+    </fields>
+    <ignore_errors>N</ignore_errors>
+    <only_when_have_rows>N</only_when_have_rows>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <return_keys>N</return_keys>
+    <schema>smart_med</schema>
+    <specify_fields>Y</specify_fields>
+    <table>final_medidores</table>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_in_table>Y</tablename_in_table>
+    <truncate>N</truncate>
+    <use_batch>Y</use_batch>
+    <attributes/>
+    <GUI>
+      <xloc>640</xloc>
+      <yloc>224</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>STG7_MEDIDORES</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>POSTGRES_SMART</connection>
+    <execute_each_row>N</execute_each_row>
+    <limit>0</limit>
+    <sql>SELECT s.*
+FROM smart_med.stg7_medidores s
+LEFT JOIN smart_med.final_medidores f
+ON s.meter_code = f.meter_code
+WHERE f.meter_code IS NULL;
+</sql>
+    <variables_active>N</variables_active>
+    <attributes/>
+    <GUI>
+      <xloc>432</xloc>
+      <yloc>224</yloc>
+    </GUI>
+  </transform>
+  <transform_error_handling>
+  </transform_error_handling>
+  <attributes/>
+</pipeline>

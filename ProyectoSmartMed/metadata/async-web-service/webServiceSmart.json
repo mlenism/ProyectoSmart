@@ -1,0 +1,8 @@
+{
+  "filename": "${PROJECT_HOME}/workflows/WF_MAIN.hwf",
+  "bodyContentVariable": "ASYNC_CONTENT",
+  "name": "webServiceSmart",
+  "runConfigurationName": "remoteSmart",
+  "statusVariables": "",
+  "enabled": false
+}

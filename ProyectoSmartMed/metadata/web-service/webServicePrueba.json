@@ -1,0 +1,11 @@
+{
+  "transformName": "STG1_TIEMPO",
+  "fieldName": "unique_date",
+  "filename": "${PROJECT_HOME}/Pipelines/STG2_TIEMPO.hpl",
+  "bodyContentVariable": "",
+  "listingStatus": false,
+  "name": "webServicePrueba",
+  "runConfigurationName": "remote",
+  "contentType": "application/json",
+  "enabled": false
+}

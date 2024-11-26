@@ -1,0 +1,32 @@
+{
+  "rdbms": {
+    "MYSQL": {
+      "databaseName": "ygp1",
+      "pluginId": "MYSQL",
+      "accessType": 0,
+      "hostname": "54.144.198.184",
+      "password": "Encrypted 2be98e2ad0ece9e81b81cbc228ec3f6fa",
+      "pluginName": "MySQL",
+      "port": "3306",
+      "driverClassName": "Mysql 8+",
+      "attributes": {
+        "SUPPORTS_TIMESTAMP_DATA_TYPE": "Y",
+        "STREAM_RESULTS": "N",
+        "EXTRA_OPTION_MYSQL.useCursorFetch": "true",
+        "EXTRA_OPTION_MYSQL.batchSize": "6000",
+        "EXTRA_OPTION_MYSQL.defaultFetchSize": "12000",
+        "FORCE_IDENTIFIERS_TO_LOWERCASE": "N",
+        "PRESERVE_RESERVED_WORD_CASE": "Y",
+        "FORCE_IDENTIFIERS_TO_UPPERCASE": "N",
+        "QUOTE_ALL_FIELDS": "N",
+        "EXTRA_OPTION_MYSQL.zeroDateTimeBehaviorValue": "CONVERT_TO_NULL",
+        "SUPPORTS_BOOLEAN_DATA_TYPE": "Y",
+        "SQL_CONNECT": "",
+        "PREFERRED_SCHEMA_NAME": ""
+      },
+      "manualUrl": "",
+      "username": "root"
+    }
+  },
+  "name": "FAP"
+}

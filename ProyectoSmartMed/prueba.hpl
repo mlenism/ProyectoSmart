@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+  <info>
+    <name>prueba</name>
+    <name_sync_with_filename>Y</name_sync_with_filename>
+    <description/>
+    <extended_description/>
+    <pipeline_version/>
+    <pipeline_type>Normal</pipeline_type>
+    <parameters>
+    </parameters>
+    <capture_transform_performance>N</capture_transform_performance>
+    <transform_performance_capturing_delay>1000</transform_performance_capturing_delay>
+    <transform_performance_capturing_size_limit>100</transform_performance_capturing_size_limit>
+    <created_user>-</created_user>
+    <created_date>2024/07/31 16:53:05.099</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2024/07/31 16:53:05.099</modified_date>
+  </info>
+  <notepads>
+  </notepads>
+  <order>
+    <hop>
+      <from>Table input</from>
+      <to>Set variables</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Set variables</from>
+      <to>REST client</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>REST client</from>
+      <to>Dummy (do nothing)</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Dummy (do nothing)</from>
+      <to>JavaScript</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>JavaScript</from>
+      <to>Dummy (do nothing) 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Dummy (do nothing) 2</from>
+      <to>Set variables 2</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <transform>
+    <name>Dummy (do nothing)</name>
+    <type>Dummy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+    <GUI>
+      <xloc>784</xloc>
+      <yloc>208</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Dummy (do nothing) 2</name>
+    <type>Dummy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+    <GUI>
+      <xloc>1088</xloc>
+      <yloc>208</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>JavaScript</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <optimizationLevel>0</optimizationLevel>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>// Supongo que result es una cadena JSON que contiene dag_runs y data_interval_start
+// Parsear la cadena JSON a un objeto JavaScript
+var jsonObject = JSON.parse(result);
+
+if (code !== 500) {
+// Obtener la cadena de fecha ISO del objeto
+var isoDateString = jsonObject.dag_runs[0]["data_interval_end"];
+
+// Crear un objeto Date desde la cadena ISO
+const date = new Date(isoDateString);
+
+// Calcular la diferencia en minutos entre UTC y la zona horaria de Perú (UTC-5)
+const peruTimezoneOffsetInMinutes = -5 * 60;
+
+// Ajustar la fecha a la zona horaria de Perú
+const peruTime = new Date(date.getTime() + peruTimezoneOffsetInMinutes * 60000);
+
+// Formatear la fecha en "YYYY-MM-DD HH:MM:SS"
+const formattedDate = peruTime.getUTCFullYear() + '-' +
+    String(peruTime.getUTCMonth() + 1).padStart(2, '0') + '-' +
+    String(peruTime.getUTCDate()).padStart(2, '0') + ' ' +
+    String(peruTime.getUTCHours()).padStart(2, '0') + ':' +
+    String(peruTime.getUTCMinutes()).padStart(2, '0') + ':' +
+    String(peruTime.getUTCSeconds()).padStart(2, '0');
+
+results = formattedDate;
+}
+
+</jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field>
+        <name>results</name>
+        <rename>results</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+    </fields>
+    <attributes/>
+    <GUI>
+      <xloc>928</xloc>
+      <yloc>208</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>REST client</name>
+    <type>Rest</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <applicationType>TEXT PLAIN</applicationType>
+    <method>GET</method>
+    <url>http://host.docker.internal:8000/api/v1/dags/dagruns</url>
+    <urlInField>N</urlInField>
+    <dynamicMethod>N</dynamicMethod>
+    <methodFieldName/>
+    <urlField/>
+    <bodyField/>
+    <httpLogin/>
+    <readTimeout>10000</readTimeout>
+    <connectionTimeout>10000</connectionTimeout>
+    <httpPassword>Encrypted </httpPassword>
+    <proxyHost/>
+    <proxyPort/>
+    <preemptive>N</preemptive>
+    <trustStoreFile/>
+    <trustStorePassword>Encrypted </trustStorePassword>
+    <ignoreSsl>N</ignoreSsl>
+    <headers>
+      </headers>
+    <parameters>
+      </parameters>
+    <matrixParameters>
+      </matrixParameters>
+    <result>
+      <name>result</name>
+      <code>code</code>
+      <response_time/>
+      <response_header/>
+    </result>
+    <attributes/>
+    <GUI>
+      <xloc>624</xloc>
+      <yloc>208</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Set variables</name>
+    <type>SetVariable</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <field_name>formatted_datetime</field_name>
+        <variable_name>lastDate</variable_name>
+        <variable_type>JVM</variable_type>
+      </field>
+    </fields>
+    <use_formatting>Y</use_formatting>
+    <attributes/>
+    <GUI>
+      <xloc>432</xloc>
+      <yloc>208</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Set variables 2</name>
+    <type>SetVariable</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <field_name>results</field_name>
+        <variable_name>endDate</variable_name>
+        <variable_type>JVM</variable_type>
+      </field>
+    </fields>
+    <use_formatting>Y</use_formatting>
+    <attributes/>
+    <GUI>
+      <xloc>1232</xloc>
+      <yloc>208</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Table input</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>POSTGRES_SMART</connection>
+    <execute_each_row>N</execute_each_row>
+    <limit>0</limit>
+    <sql>SELECT 
+    LPAD(SUBSTRING(recv_time_id::text, 1, 4), 4, '0') || '-' ||
+    LPAD(SUBSTRING(recv_time_id::text, 5, 2), 2, '0') || '-' ||
+    LPAD(SUBSTRING(recv_time_id::text, 7, 2), 2, '0') || ' ' ||
+    LPAD((recv_ts_id / 10000)::text, 2, '0') || ':' ||
+    LPAD(((recv_ts_id / 100) % 100)::text, 2, '0') || ':' ||
+    LPAD((recv_ts_id % 100)::text, 2, '0') AS formatted_datetime
+FROM 
+    smart_med.final_hechos
+ORDER BY 
+    recv_time_id DESC, 
+    recv_ts_id DESC
+LIMIT 1;
+</sql>
+    <variables_active>N</variables_active>
+    <attributes/>
+    <GUI>
+      <xloc>240</xloc>
+      <yloc>208</yloc>
+    </GUI>
+  </transform>
+  <transform_error_handling>
+  </transform_error_handling>
+  <attributes/>
+</pipeline>

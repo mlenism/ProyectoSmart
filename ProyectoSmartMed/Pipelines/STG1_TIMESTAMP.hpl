@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+  <info>
+    <name>STG1_TIMESTAMP</name>
+    <name_sync_with_filename>Y</name_sync_with_filename>
+    <description/>
+    <extended_description/>
+    <pipeline_version/>
+    <pipeline_type>Normal</pipeline_type>
+    <parameters>
+    </parameters>
+    <capture_transform_performance>N</capture_transform_performance>
+    <transform_performance_capturing_delay>1000</transform_performance_capturing_delay>
+    <transform_performance_capturing_size_limit>100</transform_performance_capturing_size_limit>
+    <created_user>-</created_user>
+    <created_date>2024/07/11 09:27:45.064</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2024/07/11 09:27:45.064</modified_date>
+  </info>
+  <notepads>
+  </notepads>
+  <order>
+    <hop>
+      <from>GENERAR_VALORES</from>
+      <to>STG1_TIMESTAMP</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <transform>
+    <name>GENERAR_VALORES</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>POSTGRES_SMART</connection>
+    <execute_each_row>N</execute_each_row>
+    <limit>0</limit>
+    <sql>WITH times AS (
+    SELECT generate_series(0, 86399) AS seconds_in_day
+)
+SELECT 
+    seconds_in_day / 3600 AS hora,
+    (seconds_in_day % 3600) / 60 AS minuto,
+    seconds_in_day % 60 AS segundo,
+    (seconds_in_day / 3600) * 10000 + ((seconds_in_day % 3600) / 60) * 100 + (seconds_in_day % 60) AS id
+FROM 
+    times;
+</sql>
+    <variables_active>N</variables_active>
+    <attributes/>
+    <GUI>
+      <xloc>528</xloc>
+      <yloc>240</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>STG1_TIMESTAMP</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <commit>1000</commit>
+    <connection>POSTGRES_SMART</connection>
+    <fields>
+      <field>
+        <column_name>id_ts</column_name>
+        <stream_name>id</stream_name>
+      </field>
+      <field>
+        <column_name>hour</column_name>
+        <stream_name>hora</stream_name>
+      </field>
+      <field>
+        <column_name>minute</column_name>
+        <stream_name>minuto</stream_name>
+      </field>
+      <field>
+        <column_name>second</column_name>
+        <stream_name>segundo</stream_name>
+      </field>
+    </fields>
+    <ignore_errors>N</ignore_errors>
+    <only_when_have_rows>N</only_when_have_rows>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <return_field/>
+    <return_keys>N</return_keys>
+    <schema>smart_med</schema>
+    <specify_fields>Y</specify_fields>
+    <table>stg1_timestamp</table>
+    <tablename_field/>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_in_table>Y</tablename_in_table>
+    <truncate>Y</truncate>
+    <use_batch>Y</use_batch>
+    <attributes/>
+    <GUI>
+      <xloc>832</xloc>
+      <yloc>240</yloc>
+    </GUI>
+  </transform>
+  <transform_error_handling>
+  </transform_error_handling>
+  <attributes/>
+</pipeline>

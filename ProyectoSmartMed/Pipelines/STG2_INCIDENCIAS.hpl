@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+  <info>
+    <name>STG2_INCIDENCIAS</name>
+    <name_sync_with_filename>Y</name_sync_with_filename>
+    <description/>
+    <extended_description/>
+    <pipeline_version/>
+    <pipeline_type>Normal</pipeline_type>
+    <parameters>
+    </parameters>
+    <capture_transform_performance>N</capture_transform_performance>
+    <transform_performance_capturing_delay>1000</transform_performance_capturing_delay>
+    <transform_performance_capturing_size_limit>100</transform_performance_capturing_size_limit>
+    <created_user>-</created_user>
+    <created_date>2024/08/20 11:47:51.255</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2024/08/20 11:47:51.255</modified_date>
+  </info>
+  <notepads>
+  </notepads>
+  <order>
+    <hop>
+      <from>stg1_incidencias</from>
+      <to>Replace in string</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Replace in string</from>
+      <to>Dummy (do nothing)</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Dummy (do nothing)</from>
+      <to>STG2_INCIDENCIAS</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <transform>
+    <name>Dummy (do nothing)</name>
+    <type>Dummy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+    <GUI>
+      <xloc>832</xloc>
+      <yloc>272</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Replace in string</name>
+    <type>ReplaceString</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <case_sensitive>N</case_sensitive>
+        <in_stream_name>observacion</in_stream_name>
+        <is_unicode>N</is_unicode>
+        <out_stream_name/>
+        <replace_by_string>TRANSMISION</replace_by_string>
+        <replace_field_by_string/>
+        <replace_string>TRANSMISIÓN</replace_string>
+        <set_empty_string>N</set_empty_string>
+        <use_regex>N</use_regex>
+        <whole_word>N</whole_word>
+      </field>
+      <field>
+        <case_sensitive>N</case_sensitive>
+        <in_stream_name>observacion</in_stream_name>
+        <is_unicode>N</is_unicode>
+        <out_stream_name/>
+        <replace_by_string>NIPLE CAJA VACIA</replace_by_string>
+        <replace_field_by_string/>
+        <replace_string>NIPLE - CAJA VACÍA</replace_string>
+        <set_empty_string>N</set_empty_string>
+        <use_regex>N</use_regex>
+        <whole_word>N</whole_word>
+      </field>
+      <field>
+        <case_sensitive>N</case_sensitive>
+        <in_stream_name>observacion</in_stream_name>
+        <is_unicode>N</is_unicode>
+        <out_stream_name/>
+        <replace_by_string>NO SE UBICA</replace_by_string>
+        <replace_field_by_string/>
+        <replace_string>NO SE UBICA MEDIDOR / CAJA DE SUMINISTRO</replace_string>
+        <set_empty_string>N</set_empty_string>
+        <use_regex>N</use_regex>
+        <whole_word>N</whole_word>
+      </field>
+      <field>
+        <case_sensitive>N</case_sensitive>
+        <in_stream_name>observacion</in_stream_name>
+        <is_unicode>N</is_unicode>
+        <out_stream_name/>
+        <replace_by_string>DIFICIL ACCESO</replace_by_string>
+        <replace_field_by_string/>
+        <replace_string>SOLICITUD INSPECCIÓN (TAPAS SELLADAS - DIFICIL ACCESO)</replace_string>
+        <set_empty_string>N</set_empty_string>
+        <use_regex>N</use_regex>
+        <whole_word>N</whole_word>
+      </field>
+      <field>
+        <case_sensitive>N</case_sensitive>
+        <in_stream_name>observacion</in_stream_name>
+        <is_unicode>N</is_unicode>
+        <out_stream_name/>
+        <replace_by_string>ESTADO DE COMUNICACION</replace_by_string>
+        <replace_field_by_string/>
+        <replace_string>FALLO DEL MÓDULO DE COMUNICACIÓN</replace_string>
+        <set_empty_string>N</set_empty_string>
+        <use_regex>N</use_regex>
+        <whole_word>N</whole_word>
+      </field>
+    </fields>
+    <attributes/>
+    <GUI>
+      <xloc>624</xloc>
+      <yloc>272</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>STG2_INCIDENCIAS</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <commit>1000</commit>
+    <connection>POSTGRES_SMART</connection>
+    <fields>
+      <field>
+        <column_name>meter_code</column_name>
+        <stream_name>meter_code</stream_name>
+      </field>
+      <field>
+        <column_name>fecha_incidencia</column_name>
+        <stream_name>fecha_incidencia</stream_name>
+      </field>
+      <field>
+        <column_name>observacion</column_name>
+        <stream_name>observacion</stream_name>
+      </field>
+    </fields>
+    <ignore_errors>N</ignore_errors>
+    <only_when_have_rows>N</only_when_have_rows>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <return_keys>N</return_keys>
+    <schema>smart_med</schema>
+    <specify_fields>Y</specify_fields>
+    <table>stg2_incidencias</table>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_in_table>Y</tablename_in_table>
+    <truncate>Y</truncate>
+    <use_batch>Y</use_batch>
+    <attributes/>
+    <GUI>
+      <xloc>1056</xloc>
+      <yloc>272</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>stg1_incidencias</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>POSTGRES_SMART</connection>
+    <execute_each_row>N</execute_each_row>
+    <limit>0</limit>
+    <sql>select * from smart_med.stg1_incidencias</sql>
+    <variables_active>N</variables_active>
+    <attributes/>
+    <GUI>
+      <xloc>432</xloc>
+      <yloc>272</yloc>
+    </GUI>
+  </transform>
+  <transform_error_handling>
+  </transform_error_handling>
+  <attributes/>
+</pipeline>
