@@ -34,6 +34,7 @@ urlpatterns = [
     path('no-exclusivos-por-gateway/', views.MedidoresNoExclusivosPorGatewayAPIView.as_view(), name='medidores_no_exclusivos_por_gateway'),
     path('logs/<str:equip_id>/', views.EquipmentStatusLogListView.as_view(), name='equipment_status_logs'),
     path('download-template/', views.DownloadTemplateView.as_view(), name='download_template'),
+    path('conteo-incidencias/', views.ConteoIncidenciasBase.as_view(), name='conteo_incidencias'),
 ]
 
 # Servir archivos media en desarrollo

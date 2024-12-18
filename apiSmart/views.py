@@ -276,7 +276,81 @@ class MedidoresExclusivosPorGatewayAPIView(APIView):
             } for row in results
         ]
 
+class ConteoIncidenciasBase(APIView):
+    def get(self, request):
+        # Obtener parámetros de consulta
+        start_date = request.query_params.get('start_date')
+        end_date = request.query_params.get('end_date')
+        creator = request.query_params.get('creator')
+
+        # Validar fechas
+        try:
+            if start_date:
+                start_date_validator = datetime.strptime(start_date, '%Y%m%d').date()
+            if end_date:
+                end_date_validator = datetime.strptime(end_date, '%Y%m%d').date()
+
+            if not start_date or not end_date:
+                raise ValidationError("Both start_date and end_date are required.")
+
+            if start_date > end_date:
+                raise ValidationError("start_date cannot be greater than end_date.")
+        except ValueError:
+            return Response({"error": "Invalid date format. Use YYYYMMDD."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Validar creator
+        if not creator:
+            return Response({"error": "Creator parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Query SQL ajustada para incluir el rango de fechas y creator
+        query = f"""
+            WITH IncidenciasEnRango AS (
+                SELECT
+                    fi.meter_code,
+                    fi.falla_id,
+                    fi.fecha_incidencia,
+                    fm.creator,
+                    ff.falla_desc,
+                    ff.falla_type
+                FROM
+                    final_incidencias fi
+                INNER JOIN
+                    final_medidores fm ON fi.meter_code = fm.meter_code
+                INNER JOIN
+                    final_fallas ff ON fi.falla_id = ff.falla_id
+                WHERE
+                    fi.fecha_incidencia BETWEEN '{start_date}' AND '{end_date}' 
+                    AND fm.creator = '{creator}'
+            )
+            SELECT
+                COUNT(*) AS total_incidencias,
+                falla_type,
+                falla_desc,
+                COUNT(falla_id) AS conteo_tipo_falla
+            FROM
+                IncidenciasEnRango
+            GROUP BY
+                falla_type, falla_desc
+            ORDER BY
+                falla_type, falla_desc;
+        """
+
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            results = cursor.fetchall()
+
+        # Construir la respuesta
+        response_data = [
+            {
+                'total_incidencias': row[0],
+                'falla_type': row[1],
+                'falla_desc': row[2],
+                'conteo_tipo_falla': row[3]
+            } for row in results
+        ]
+
         return Response(response_data, status=status.HTTP_200_OK)
+
 
 class MedidoresNoExclusivosPorGatewayAPIView(APIView):
     def get(self, request):
@@ -341,7 +415,9 @@ class MedidoresNoExclusivosPorGatewayAPIView(APIView):
         """
 
         with connection.cursor() as cursor:
+            print("Entra")
             cursor.execute(query)
+            print("Sale")
             results = cursor.fetchall()
 
         # Construir la respuesta
