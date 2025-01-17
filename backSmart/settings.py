@@ -116,10 +116,17 @@ DATABASES = {
         #'ENGINE': 'django.db.backends.sqlite3',
         #'NAME': BASE_DIR / 'db.sqlite3',
         'ENGINE': 'django.db.backends.postgresql',#Driver de postgres
+<<<<<<< HEAD
         'NAME': 'airflow',#nombre de la base de datos del servidor
         'USER': 'arq', #Usuario arq
         'PASSWORD': 'airflow', #contraseña password
         'HOST': '20.0.1.136', #Host (modificar como ruta remota en caso de error en la nube)
+=======
+        'NAME': 'postgres',#nombre de la base de datos del servidor
+        'USER': 'postgres', #Usuario arq
+        'PASSWORD': 'airflowMed', #contraseña password
+        'HOST': '18.221.231.103', #Host (modificar como ruta remota en caso de error en la nube)
+>>>>>>> 617813fb1a68aa8b32fa8f23ef44f2e112e6943b
         'PORT': '5432',
         'OPTIONS': {
             'options': '-c search_path=django_api,smart_med' #necesario puesto que el esquema es smart_med

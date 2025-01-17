@@ -3,12 +3,5 @@
   "unitTestsBasePath" : "${PROJECT_HOME}",
   "dataSetsCsvFolder" : "${PROJECT_HOME}/datasets",
   "enforcingExecutionInHome" : true,
-  "parentProjectName" : "default",
-  "config" : {
-    "variables" : [ {
-      "name" : "postgres_port",
-      "value" : "172.17.0.2",
-      "description" : ""
-    } ]
-  }
+  "parentProjectName" : "default"
 }
