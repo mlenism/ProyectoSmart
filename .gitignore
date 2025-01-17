@@ -1,0 +1,13 @@
+# Ignorar entornos virtuales
+venv/
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Librerías instaladas localmente
+*.egg-info/
+
+# Archivos de configuración locales
+.env
