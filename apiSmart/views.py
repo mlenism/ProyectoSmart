@@ -181,7 +181,7 @@ class MedidoresExclusivosPorGatewayAPIView(APIView):
         start_date = request.query_params.get('start_date')
         end_date = request.query_params.get('end_date')
         service_centers = request.query_params.getlist('service_centers')  # Obtener lista de service_centers
-
+        print("recibiendo los datos")
         # Validar fechas como antes
         try:
             if start_date:
@@ -261,10 +261,12 @@ class MedidoresExclusivosPorGatewayAPIView(APIView):
             ORDER BY
                 medidores_exclusivos DESC;
         """
-
+	
         with connection.cursor() as cursor:
+            print("Ejecutando el cursor")
             cursor.execute(query)
             results = cursor.fetchall()
+            print("cursor ejecutado")
 
         # Construir la respuesta
         response_data = [
@@ -484,11 +486,30 @@ class VistaCombinadaCreateView(viewsets.ModelViewSet):
         if falla_type:
             falla_type_list = [c.strip() for c in falla_type.split(',')]
             queryset = queryset.filter(falla__falla_type__in=falla_type_list)
+        # Procesar y filtrar fecha_gte y fecha_lte
         if fecha_gte:
-            queryset = queryset.filter(fecha__gte=fecha_gte)
+            fecha_gte = self.validate_and_convert_date(fecha_gte)
+            if fecha_gte:
+                queryset = queryset.filter(fecha__gte=fecha_gte)
         if fecha_lte:
-            queryset = queryset.filter(fecha__lte=fecha_lte)
+            fecha_lte = self.validate_and_convert_date(fecha_lte)
+            if fecha_lte:
+                queryset = queryset.filter(fecha__lte=fecha_lte)
+
         return queryset
+
+    def validate_and_convert_date(self, date_str):
+        """
+        Valida y convierte un string de fecha en formato aceptable.
+        Soporta los formatos YYYYMMDD y YYYY-MM-DD.
+        """
+        formats = ['%Y%m%d', '%Y-%m-%d']
+        for fmt in formats:
+            try:
+                return datetime.strptime(date_str, fmt).strftime('%Y-%m-%d')
+            except ValueError:
+                continue
+        return None  # Retorna None si ningún formato es válido
     
     def convert_fecha_format(self, fecha_str):
         """

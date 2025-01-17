@@ -32,35 +32,6 @@
     </hop>
   </order>
   <transform>
-    <name>STG4_INCIDENCIAS</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>POSTGRES_SMART</connection>
-    <execute_each_row>N</execute_each_row>
-    <limit>0</limit>
-    <sql>SELECT o.*
-FROM smart_med.stg4_incidencias o
-WHERE NOT EXISTS (
-    SELECT 1 
-    FROM smart_med.final_incidencias d
-    WHERE d.incidencia_id = o.incidencia_id
-);
-</sql>
-    <variables_active>N</variables_active>
-    <attributes/>
-    <GUI>
-      <xloc>368</xloc>
-      <yloc>272</yloc>
-    </GUI>
-  </transform>
-  <transform>
     <name>FINAL_INCIDENCIAS</name>
     <type>TableOutput</type>
     <description/>
@@ -90,6 +61,10 @@ WHERE NOT EXISTS (
         <column_name>incidencia_id</column_name>
         <stream_name>incidencia_id</stream_name>
       </field>
+      <field>
+        <column_name>encargado</column_name>
+        <stream_name>encargado</stream_name>
+      </field>
     </fields>
     <ignore_errors>N</ignore_errors>
     <only_when_have_rows>N</only_when_have_rows>
@@ -110,6 +85,39 @@ WHERE NOT EXISTS (
     <attributes/>
     <GUI>
       <xloc>736</xloc>
+      <yloc>272</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>STG4_INCIDENCIAS</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>POSTGRES_SMART</connection>
+    <execute_each_row>N</execute_each_row>
+    <limit>0</limit>
+    <sql>SELECT 
+    o.*,
+    'PLATAFORMA' AS encargado
+FROM 
+    smart_med.stg4_incidencias o
+WHERE 
+    NOT EXISTS (
+        SELECT 1 
+        FROM smart_med.final_incidencias d
+        WHERE d.incidencia_id = o.incidencia_id
+    );
+</sql>
+    <variables_active>N</variables_active>
+    <attributes/>
+    <GUI>
+      <xloc>368</xloc>
       <yloc>272</yloc>
     </GUI>
   </transform>

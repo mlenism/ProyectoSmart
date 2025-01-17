@@ -161,7 +161,7 @@ results = formattedDate;
     </partitioning>
     <applicationType>TEXT PLAIN</applicationType>
     <method>GET</method>
-    <url>http://host.docker.internal:8000/api/v1/dags/dagruns</url>
+    <url>http://20.0.1.136:8000/api/v1/dags/dagruns</url>
     <urlInField>N</urlInField>
     <dynamicMethod>N</dynamicMethod>
     <methodFieldName/>

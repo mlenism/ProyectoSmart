@@ -129,7 +129,7 @@
     <file>
       <file_required>N</file_required>
       <include_subfolders>N</include_subfolders>
-      <name>${PROJECT_HOME}/FuentesSmartMed/ExcelIncidencias.xlsx</name>
+      <name>${PROJECT_HOME}/FuentesSmartMed/incidencias.xlsx</name>
     </file>
     <header>Y</header>
     <limit>0</limit>
@@ -137,7 +137,7 @@
     <noempty>Y</noempty>
     <sheets>
       <sheet>
-        <name>incidencias</name>
+        <name>CALLAO AGOSTO</name>
         <startcol>0</startcol>
         <startrow>0</startrow>
       </sheet>
@@ -166,7 +166,7 @@
       <field>
         <in_stream_name>OBSERVACIÓN</in_stream_name>
         <out_stream_name/>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <lower_upper>upper</lower_upper>
         <padding_type>none</padding_type>
         <pad_char/>
@@ -214,14 +214,11 @@
     <only_when_have_rows>N</only_when_have_rows>
     <partitioning_daily>N</partitioning_daily>
     <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
     <partitioning_monthly>Y</partitioning_monthly>
-    <return_field/>
     <return_keys>N</return_keys>
     <schema>smart_med</schema>
     <specify_fields>Y</specify_fields>
     <table>stg1_incidencias</table>
-    <tablename_field/>
     <tablename_in_field>N</tablename_in_field>
     <tablename_in_table>Y</tablename_in_table>
     <truncate>Y</truncate>

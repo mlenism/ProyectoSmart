@@ -41,10 +41,23 @@
     <execute_each_row>N</execute_each_row>
     <limit>0</limit>
     <sql>SELECT *,
-RTRIM(creator) AS creator_trimmed,
-RTRIM(meter_code) AS meter_trimmed
+       CASE 
+           WHEN RTRIM(creator) = 'ESCE' THEN 'LIMA NORTE   HCI'
+           ELSE RTRIM(creator)
+       END AS creator_trimmed,
+       RTRIM(meter_code) AS meter_trimmed
 FROM smart_med.stg3_medidores
-WHERE RTRIM(creator) IN ('SEDAPAL COMAS', 'SEDAPAL CALLAO', 'VILLA', 'SEDAPAL SURQUILLO', 'SEDAPAL ATE', 'SEDAPAL SAN JUAN', 'SEDAPAL BRENA', 'LIMA NORTE   HCI');
+WHERE RTRIM(creator) IN (
+    'SEDAPAL COMAS', 
+    'SEDAPAL CALLAO', 
+    'VILLA', 
+    'SEDAPAL SURQUILLO', 
+    'SEDAPAL ATE', 
+    'SEDAPAL SAN JUAN', 
+    'SEDAPAL BRENA', 
+    'LIMA NORTE   HCI',
+    'ESCE'
+);
 </sql>
     <variables_active>N</variables_active>
     <attributes/>
