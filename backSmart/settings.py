@@ -98,16 +98,14 @@ ASGI_APPLICATION = 'backSmart.asgi.application' #modificar archivo asgi.py para 
 #Por default nos estamos conectando al servidor de postgres
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': BASE_DIR / 'db.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql',#Driver de postgres
-        'NAME': 'postgres',#nombre de la base de datos del servidor
-        'USER': 'postgres', #Usuario arq
-        'PASSWORD': 'airflowMed', #contraseña password
-        'HOST': '18.221.231.103', #Host (modificar como ruta remota en caso de error en la nube)
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'airflow',
+        'USER': 'arq',
+        'PASSWORD': 'airflow',
+        'HOST': '3.135.197.152',
         'PORT': '5432',
         'OPTIONS': {
-            'options': '-c search_path=django_api,smart_med' #necesario puesto que el esquema es smart_med
+            'options': '-c search_path=django_api,smart_med'
         }
     },
     'mysql_db': {

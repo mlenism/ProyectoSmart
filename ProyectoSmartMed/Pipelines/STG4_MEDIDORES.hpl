@@ -41,10 +41,23 @@
     <execute_each_row>N</execute_each_row>
     <limit>0</limit>
     <sql>SELECT *,
-RTRIM(creator) AS creator_trimmed,
-RTRIM(meter_code) AS meter_trimmed
+       CASE 
+           WHEN RTRIM(creator) = 'ESCE' THEN 'LIMA NORTE   HCI'
+           ELSE RTRIM(creator)
+       END AS creator_trimmed,
+       RTRIM(meter_code) AS meter_trimmed
 FROM smart_med.stg3_medidores
-WHERE RTRIM(creator) IN ('SEDAPAL COMAS', 'SEDAPAL CALLAO', 'VILLA', 'SEDAPAL SURQUILLO', 'SEDAPAL ATE', 'SEDAPAL SAN JUAN', 'SEDAPAL BRENA', 'LIMA NORTE   HCI');
+WHERE RTRIM(creator) IN (
+    'SEDAPAL COMAS', 
+    'SEDAPAL CALLAO', 
+    'VILLA', 
+    'SEDAPAL SURQUILLO', 
+    'SEDAPAL ATE', 
+    'SEDAPAL SAN JUAN', 
+    'SEDAPAL BRENA', 
+    'LIMA NORTE   HCI',
+    'ESCE'
+);
 </sql>
     <variables_active>N</variables_active>
     <attributes/>
@@ -124,14 +137,11 @@ WHERE RTRIM(creator) IN ('SEDAPAL COMAS', 'SEDAPAL CALLAO', 'VILLA', 'SEDAPAL SU
     <only_when_have_rows>N</only_when_have_rows>
     <partitioning_daily>N</partitioning_daily>
     <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
     <partitioning_monthly>Y</partitioning_monthly>
-    <return_field/>
     <return_keys>N</return_keys>
     <schema>smart_med</schema>
     <specify_fields>Y</specify_fields>
     <table>stg4_medidores</table>
-    <tablename_field/>
     <tablename_in_field>N</tablename_in_field>
     <tablename_in_table>Y</tablename_in_table>
     <truncate>Y</truncate>
