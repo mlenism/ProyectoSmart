@@ -38,6 +38,12 @@ ALLOWED_HOSTS = [
     '*'
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://3.135.197.152:3000",  # Ajusta según el puerto de tu frontend
+    "*",
+]
+
+
 
 # Application definition
 
@@ -69,6 +75,15 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'DELETE',
+    'OPTIONS',
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'backSmart.urls'
 
@@ -98,11 +113,13 @@ ASGI_APPLICATION = 'backSmart.asgi.application' #modificar archivo asgi.py para 
 #Por default nos estamos conectando al servidor de postgres
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'airflow',
-        'USER': 'arq',
-        'PASSWORD': 'airflow',
-        'HOST': '3.135.197.152',
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',#Driver de postgres
+        'NAME': 'airflow',#nombre de la base de datos del servidor
+        'USER': 'arq', #Usuario arq
+        'PASSWORD': 'airflow', #contraseña password
+        'HOST': '20.0.1.136', #Host (modificar como ruta remota en caso de error en la nube
         'PORT': '5432',
         'OPTIONS': {
             'options': '-c search_path=django_api,smart_med'
