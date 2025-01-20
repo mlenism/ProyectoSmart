@@ -1,7 +1,9 @@
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from.serializer import Meterserializer, Alarmaserializer
-from .models import Meter, Alarma, Tapa, Falla, Incidencia, Gateway, Hechos, VistaCombinada, EquipStatus, EquipmentStatusLog
+from .alarms.models import Alarma
+from .shared.models import Falla
+from .models import Meter, Tapa, Incidencia, Gateway, Hechos, VistaCombinada, EquipStatus, EquipmentStatusLog
 from datetime import datetime
 import json
 import requests
@@ -838,8 +840,6 @@ class AlarmViewSet(viewsets.ModelViewSet):
                 )
 
         return queryset
-    
-
 
 @method_decorator(csrf_exempt, name='dispatch')
 class TriggerDagRunView(View):

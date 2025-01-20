@@ -1,4 +1,5 @@
 from django.db import models
+from .shared.models import Falla
 
 ##Modelo de MySQL
 class EquipStatus(models.Model):
@@ -20,17 +21,6 @@ class EquipmentStatusLog(models.Model):
     class Meta:
         db_table = 'as_equip_status_logs'
 ##----------------------------------------------------------------
-
-#Modelo para las fallas referentes a las alarmas
-class Falla(models.Model):
-    falla_id = models.IntegerField(primary_key=True)
-    falla_desc = models.CharField(max_length=255)
-    falla_type = models.CharField(max_length=500)
-
-    class Meta:
-        db_table = 'smart_med"."final_fallas'
-        managed = False
-
 #Modelo para las tapas referentes a los medidores
 class Tapa(models.Model):
     tapa_id = models.IntegerField(primary_key=True)
@@ -59,21 +49,6 @@ class Meter(models.Model):
     class Meta:
         db_table = 'smart_med\".\"final_medidores'
         managed = False #No manejar migraciones para esta tabla, al activarlas cancela las foreign keys
-
-# Creación del Modelo Alarmas donde se verán los registros de las fallas
-class Alarma(models.Model):
-    alarm_pk = models.PositiveBigIntegerField(primary_key=True)
-    alarm_id = models.CharField(max_length=25)
-    meter_code = models.CharField(max_length=25)
-    alarm_time_id = models.IntegerField()  # Campo para la fecha en formato YYYYMMDD
-    alarm_timestamp_id = models.IntegerField()    # Campo para la hora en formato HHMMSS
-    recv_time_id = models.IntegerField()  # Campo para la fecha en formato YYYYMMDD
-    recv_timestamp_id = models.IntegerField()    # Campo para la hora en formato HHMMSS
-    falla = models.ForeignKey(Falla, on_delete=models.SET_NULL, db_column='fallo_id', null=True) #fallo_id de alarmas referencia a falla_id de Fallas
-
-    class Meta:
-        db_table = 'smart_med\".\"final_alarmas'
-        managed = False #No manejar migraciones para esta tabla
 
 # Creación del Modelo Alarmas donde se verán los registros de las fallas
 class Incidencia(models.Model):

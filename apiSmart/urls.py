@@ -10,7 +10,7 @@ router.register(r'incidencias', views.IncidenciaCreateView, basename='incidencia
 router.register(r'gateways', views.GatewayCreateView, basename='gateways')
 router.register(r'gateways_mysql', views.GatewayMySqlCreateView, basename='gatewaysSql')
 router.register(r'meters', views.MeterViewSet)
-router.register(r'alarms', views.AlarmViewSet)
+#router.register(r'alarms', views.AlarmViewSet)
 router.register(r'meters-empty', views.MeterEmptyViewSet, basename='meter-empty')
 router.register(r'unique-tapaDesc', views.UniqueTapasListView, basename='unique-tapa')
 router.register(r'unique-fallaDesc', views.UniqueFallasDescListView, basename='unique-falla')
@@ -18,6 +18,7 @@ router.register(r'vista-combinada', views.VistaCombinadaCreateView, basename='vi
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('alarms/', include('apiSmart.alarms.urls')),
     path('dags/<str:dag_id>/dagRuns', views.TriggerDagRunView.as_view(), name='trigger_dag_run'),
     path('dags/dagruns', views.GetDagRuns.as_view(), name='get-variables'),
     path('dags/variables', views.GetVariables.as_view(), name='get-dagruns'),
@@ -26,7 +27,6 @@ urlpatterns = [
     path('unique-falla-type/', views.UniqueFallaTypeListView.as_view(), name='unique-falla-type'),
     path('autocomplete/', views.MeterAutocompleteView.as_view(), name='meter-autocomplete'),
     path('autocomplete-gateway/', views.GatewayAutocompleteView.as_view(), name='gateway-autocomplete'),
-    path('autocomplete-alarma/', views.AlarmaAutocompleteView.as_view(), name='alarma-autocomplete'),
     path('autocomplete-combinada/', views.CombinedAutocompleteView.as_view(), name='combined-autocomplete'),
     path('incidencias-alarmas/', views.AlarmasIncidenciasView.as_view(), name='incidencias-alarmas'),
     path('upload/', views.FileUploadView.as_view(), name='file-upload'),

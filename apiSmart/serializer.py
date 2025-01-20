@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Meter, Alarma, Tapa, Falla, Incidencia, Gateway, VistaCombinada, EquipStatus, EquipmentStatusLog
+from .models import Meter, Tapa, Falla, Incidencia, Gateway, VistaCombinada, EquipStatus, EquipmentStatusLog
 from datetime import datetime
+from .alarms.models import Alarma
 
 
 class EquipmentStatusLogSerializer(serializers.ModelSerializer):
