@@ -6,7 +6,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 router = routers.DefaultRouter()
-router.register(r'incidencias', views.IncidenciaCreateView, basename='incidencias')
+#router.register(r'incidencias', views.IncidenciaCreateView, basename='incidencias')
 router.register(r'gateways', views.GatewayCreateView, basename='gateways')
 router.register(r'gateways_mysql', views.GatewayMySqlCreateView, basename='gatewaysSql')
 router.register(r'meters', views.MeterViewSet)
@@ -19,6 +19,7 @@ router.register(r'vista-combinada', views.VistaCombinadaCreateView, basename='vi
 urlpatterns = [
     path('', include(router.urls)),
     path('alarms/', include('apiSmart.alarms.urls')),
+    path('incidencias/', include('apiSmart.incidencias.urls')),
     path('dags/<str:dag_id>/dagRuns', views.TriggerDagRunView.as_view(), name='trigger_dag_run'),
     path('dags/dagruns', views.GetDagRuns.as_view(), name='get-variables'),
     path('dags/variables', views.GetVariables.as_view(), name='get-dagruns'),
@@ -34,7 +35,7 @@ urlpatterns = [
     path('no-exclusivos-por-gateway/', views.MedidoresNoExclusivosPorGatewayAPIView.as_view(), name='medidores_no_exclusivos_por_gateway'),
     path('logs/<str:equip_id>/', views.EquipmentStatusLogListView.as_view(), name='equipment_status_logs'),
     path('download-template/', views.DownloadTemplateView.as_view(), name='download_template'),
-    path('conteo-incidencias/', views.ConteoIncidenciasBase.as_view(), name='conteo_incidencias'),
+    #path('conteo-incidencias/', views.ConteoIncidenciasBase.as_view(), name='conteo_incidencias'),
 ]
 
 # Servir archivos media en desarrollo

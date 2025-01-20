@@ -1,9 +1,10 @@
 from rest_framework import viewsets
 from rest_framework.views import APIView
-from.serializer import Meterserializer, Alarmaserializer
+from.serializer import Meterserializer
 from .alarms.models import Alarma
 from .shared.models import Falla
-from .models import Meter, Tapa, Incidencia, Gateway, Hechos, VistaCombinada, EquipStatus, EquipmentStatusLog
+from .incidencias.models import Incidencia
+from .models import Meter, Tapa, Gateway, Hechos, VistaCombinada, EquipStatus, EquipmentStatusLog
 from datetime import datetime
 import json
 import requests
@@ -13,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework import generics, filters
 from rest_framework.response import Response
-from .serializer import UniqueCreatorSerializer, CombinedSerializer, UniqueStatuSerializer, VariableSerializer, EquipmentStatusLogSerializer, DagrunSerializer, Tapaserializer, Fallaserializer, UniqueFallaTypeSerializer, IncidenciaSerializer, GatewaySerializer, CombinedSerializer, VistaCombinadaSerializer, DateRangeSerializer, EquipStatusSerializer, CombinedEquipStatusSerializer
+from .serializer import UniqueCreatorSerializer, CombinedSerializer, UniqueStatuSerializer, VariableSerializer, EquipmentStatusLogSerializer, DagrunSerializer, Tapaserializer, Fallaserializer, UniqueFallaTypeSerializer, GatewaySerializer, CombinedSerializer, VistaCombinadaSerializer, DateRangeSerializer, EquipStatusSerializer, CombinedEquipStatusSerializer
 from django.core.cache import cache
 from django_filters.rest_framework import DjangoFilterBackend
 from .pagination import CustomPageNumberPagination
@@ -24,7 +25,6 @@ from itertools import chain
 import os
 import mimetypes
 from django.db import connection
-import base64
 from rest_framework.exceptions import ValidationError
 ##import joblib  # o usar keras si es un modelo Keras
 import json
@@ -282,86 +282,6 @@ class MedidoresExclusivosPorGatewayAPIView(APIView):
 
         return Response(response_data, status=status.HTTP_200_OK)
 
-class ConteoIncidenciasBase(APIView):
-    def get(self, request):
-        try:
-            # Obtener parámetros de consulta
-            start_date = request.query_params.get('start_date')
-            end_date = request.query_params.get('end_date')
-            creator = request.query_params.get('creator')
-
-            # Validar fechas
-            try:
-                if start_date:
-                    start_date_validator = datetime.strptime(start_date, '%Y%m%d').date()
-                if end_date:
-                    end_date_validator = datetime.strptime(end_date, '%Y%m%d').date()
-
-                if not start_date or not end_date:
-                    raise ValidationError("Both start_date and end_date are required.")
-
-                if start_date > end_date:
-                    raise ValidationError("start_date cannot be greater than end_date.")
-            except ValueError:
-                return Response({"error": "Invalid date format. Use YYYYMMDD."}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Validar creator
-            if not creator:
-                return Response({"error": "Creator parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Query SQL ajustada para incluir el rango de fechas y creator
-            query = f"""
-                WITH IncidenciasEnRango AS (
-                    SELECT
-                        fi.meter_code,
-                        fi.falla_id,
-                        fi.fecha_incidencia,
-                        fm.creator,
-                        ff.falla_desc,
-                        ff.falla_type
-                    FROM
-                        final_incidencias fi
-                    INNER JOIN
-                        final_medidores fm ON fi.meter_code = fm.meter_code
-                    INNER JOIN
-                        final_fallas ff ON fi.falla_id = ff.falla_id
-                    WHERE
-                        fi.fecha_incidencia BETWEEN {start_date} AND {end_date} 
-                        AND fm.creator = '{creator}'
-                )
-                SELECT
-                    COUNT(*) AS total_incidencias,
-                    falla_type,
-                    falla_desc,
-                    COUNT(falla_id) AS conteo_tipo_falla
-                FROM
-                    IncidenciasEnRango
-                GROUP BY
-                    falla_type, falla_desc
-                ORDER BY
-                    falla_type, falla_desc;
-            """
-
-            with connection.cursor() as cursor:
-                cursor.execute(query)
-                results = cursor.fetchall()
-
-            # Construir la respuesta
-            response_data = [
-                {
-                    'total_incidencias': row[0],
-                    'falla_type': row[1],
-                    'falla_desc': row[2],
-                    'conteo_tipo_falla': row[3]
-                } for row in results
-            ]
-
-            return Response(response_data, status=status.HTTP_200_OK)
-        except Exception as e:
-            # Captura errores generales y proporciona un mensaje de error
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 class MedidoresNoExclusivosPorGatewayAPIView(APIView):
     def get(self, request):
         # Obtener parámetros de consulta
@@ -480,52 +400,6 @@ class AlarmasIncidenciasView(APIView):
 
         return paginator.get_paginated_response(data.data)
 
-
-class IncidenciaCreateView(viewsets.ModelViewSet):
-    
-    queryset = Incidencia.objects.all()
-
-    serializer_class = IncidenciaSerializer
-    pagination_class = CustomPageNumberPagination
-
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    ordering_fields = ['incidencia_id',
-                       'meter_code'
-                       'fecha_incidencia',
-                       'falla'
-                        ]
-    
-    def get_queryset(self):
-        
-        queryset = super().get_queryset()
-        incidencia_id = self.request.query_params.get('incidencia_id') #Habilitar filtrado por status
-        fecha_incidencia = self.request.query_params.get('fecha_incidencia') #Habilitar filtrado por tapa_id
-        falla = self.request.query_params.get('falla') #Habilitar filtrado por create_date
-        meter_code = self.request.query_params.get('meter_code') #Habilitar filtrado por create_date
-
-        if incidencia_id:
-            # Split the creator query parameter by comma to handle multiple values
-            incidencia_id_list = [c.strip() for c in incidencia_id.split(',')]
-            queryset = queryset.filter(incidencia_id__in=incidencia_id_list)
-        if fecha_incidencia:
-            fecha_incidencia_list = [c.strip() for c in fecha_incidencia.split(',')]
-            queryset = queryset.filter(fecha_incidencia__in=fecha_incidencia_list)
-        if falla:
-            queryset = queryset.filter(falla=falla)
-        if meter_code:
-            queryset = queryset.filter(meter_code=meter_code)
-        return queryset
-    
-
-    def perform_create(self, serializer):
-        img_base64 = self.request.data.get("img")
-        
-        if img_base64:
-            # Decodifica la imagen de base64 a binario
-            img_data = base64.b64decode(img_base64)
-            serializer.save(img=img_data)
-        else:
-            serializer.save()
 
 class VistaCombinadaCreateView(viewsets.ModelViewSet):
     
@@ -770,76 +644,6 @@ class MeterViewSet(viewsets.ModelViewSet):
 
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data)
-    
-
-# Vista para alarmas
-class AlarmViewSet(viewsets.ModelViewSet):
-
-    queryset = Alarma.objects.all()  # Define el queryset aquí
-
-    # Serializador de los medidores
-    serializer_class = Alarmaserializer
-    pagination_class = CustomPageNumberPagination
-
-    # Filtros del backend
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-
-    ordering_fields = ['alarm_time_id', 
-                       'alarm_timestamp_id', 
-                       'meter_code',
-                       'falla__falla_desc',
-                       'alarm_pk',
-                       'falla_type']  # Añade estos campos a los campos ordenables
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        falla_desc = self.request.query_params.get('falla_desc')
-        falla_type = self.request.query_params.get('falla_type')
-        alarm_pk = self.request.query_params.get('alarm_pk')
-        alarm_time_id_gte = self.request.query_params.get('alarm_time_id_gte')
-        alarm_time_id_lte = self.request.query_params.get('alarm_time_id_lte')
-        alarm_time_id_exact = self.request.query_params.get('alarm_time_id_exact')
-        meter_code = self.request.query_params.get('meter_code')
-
-
-        ordering = self.request.query_params.get('ordering', None)
-
-        if falla_type:
-            falla_type_list = [c.strip() for c in falla_type.split(',')]
-            queryset = queryset.filter(falla__falla_type__in=falla_type_list)
-        if falla_desc:
-            falla_desc_list = [c.strip() for c in falla_desc.split(',')]
-            queryset = queryset.filter(falla__falla_desc__in=falla_desc_list)
-        if alarm_pk:
-            queryset = queryset.filter(alarm_pk=alarm_pk)
-        if alarm_time_id_gte:
-            queryset = queryset.filter(alarm_time_id__gte=alarm_time_id_gte)
-        if alarm_time_id_lte:
-            queryset = queryset.filter(alarm_time_id__lte=alarm_time_id_lte)
-        if alarm_time_id_exact:
-            queryset = queryset.filter(alarm_time_id=alarm_time_id_exact)
-
-        
-        # Filtro por meter_code
-        if meter_code:
-            meter_code_list = [code.strip() for code in meter_code.split(',')]
-            queryset = queryset.filter(meter_code__in=meter_code_list)
-    
-        if ordering:
-            if ordering == 'alarm_date':
-                # Ordenar por create_time_id y create_ts_id en orden descendente
-                queryset = queryset.order_by(
-                    F('alarm_time_id').desc(nulls_last=True),
-                    F('alarm_timestamp_id').desc(nulls_last=True)
-                )
-            elif ordering.startswith('-alarm_date'):
-                # Ordenar por create_time_id y create_ts_id en orden ascendente
-                queryset = queryset.order_by(
-                    F('alarm_time_id').asc(nulls_last=True),
-                    F('alarm_timestamp_id').asc(nulls_last=True)
-                )
-
-        return queryset
 
 @method_decorator(csrf_exempt, name='dispatch')
 class TriggerDagRunView(View):
@@ -1006,52 +810,6 @@ class MeterAutocompleteView(APIView):
             serializer = Meterserializer(results, many=True)
             return Response(serializer.data)
         return JsonResponse([], safe=False)
-    
-class AlarmaAutocompleteView(APIView):
-    queryset = Alarma.objects.all()
-    serializer_class = Alarmaserializer
-    pagination_class = CustomPageNumberPagination
-
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    ordering_fields = ['alarm_time_id', 
-                       'alarm_timestamp_id', 
-                       'meter_code',
-                       'falla__falla_desc',
-                       'alarm_pk',
-                       'falla_type']
-
-    def get(self, request):
-        query = request.GET.get('q', '')
-        alarm_time_id_gte = request.GET.get('alarm_time_id_gte')
-        alarm_time_id_lte = request.GET.get('alarm_time_id_lte')
-        alarm_time_id_exact = request.GET.get('alarm_time_id_exact')
-
-        results = Alarma.objects.all()
-
-        if query:
-            results = results.filter(meter_code__icontains=query)
-
-        # Aplicar filtros de rango y exactitud
-        if alarm_time_id_gte:
-            results = results.filter(alarm_time_id__gte=alarm_time_id_gte)
-        if alarm_time_id_lte:
-            results = results.filter(alarm_time_id__lte=alarm_time_id_lte)
-        if alarm_time_id_exact:
-            results = results.filter(alarm_time_id=alarm_time_id_exact)
-
-        # Ordenar los resultados
-        results = results.order_by(
-            F('alarm_time_id').desc(nulls_last=True),
-            F('alarm_timestamp_id').desc(nulls_last=True)
-        )
-
-        paginator = self.pagination_class()
-        page = paginator.paginate_queryset(results, request)
-        if page is not None:
-            serializer = Alarmaserializer(page, many=True)
-            return paginator.get_paginated_response(serializer.data)
-        serializer = Alarmaserializer(results, many=True)
-        return Response(serializer.data)
 
 #class SumaUltimoValor(generics.GenericAPIView):
 #    serializer_class = SumaUltimoValorSerializer
