@@ -24,7 +24,6 @@ urlpatterns = [
     path('unique-status/', distinctViews.UniqueStatusListView.as_view(), name='unique-status'),
     path('unique-falla-type/', distinctViews.UniqueFallaTypeListView.as_view(), name='unique-falla-type'),
     path('autocomplete-combinada/', views.CombinedAutocompleteView.as_view(), name='combined-autocomplete'),
-    path('incidencias-alarmas/', views.AlarmasIncidenciasView.as_view(), name='incidencias-alarmas'),
     path('upload/', views.FileUploadView.as_view(), name='file-upload'),
     path('download-template/', views.DownloadTemplateView.as_view(), name='download_template'),
 ]

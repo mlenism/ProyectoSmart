@@ -7,7 +7,7 @@ from datetime import datetime
 from django.views import View
 from rest_framework import filters
 from rest_framework.response import Response
-from .serializer import CombinedSerializer, CombinedSerializer, VistaCombinadaSerializer
+from .serializer import VistaCombinadaSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from .pagination import CustomPageNumberPagination
 from django.db.models import F
@@ -62,23 +62,6 @@ class FileUploadView(APIView):
                 destination.write(chunk)
 
         return Response({"message": f"Archivo {new_filename} subido exitosamente."}, status=status.HTTP_201_CREATED)
-
-class AlarmasIncidenciasView(APIView):
-    pagination_class = CustomPageNumberPagination  # Usa la clase de paginación personalizada
-
-    def get(self, request, *args, **kwargs):
-        # Obtener parámetros de consulta
-        queryset = list(chain(
-            ({'tipo': 'alarma', 'data': item} for item in Alarma.objects.all()),
-            ({'tipo': 'incidencia', 'data': item} for item in Incidencia.objects.all())
-        ))
-        # Paginación
-        paginator = self.pagination_class()
-        page = paginator.paginate_queryset(queryset, request)
-        data = CombinedSerializer(page, many=True)
-
-        return paginator.get_paginated_response(data.data)
-
 
 class VistaCombinadaCreateView(viewsets.ModelViewSet):
     

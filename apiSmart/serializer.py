@@ -1,51 +1,5 @@
 from rest_framework import serializers
 from .models import VistaCombinada
-from datetime import datetime
-
-class CombinedSerializer(serializers.Serializer):
-    tipo = serializers.CharField()
-    id = serializers.IntegerField()
-    meter_code = serializers.CharField()
-    fallo = serializers.CharField()
-    fecha = serializers.DateTimeField()
-
-    def to_representation(self, instance):
-        if instance['tipo'] == 'alarma':
-            return {
-                'tipo': "ALARMA",
-                'id': instance['data'].alarm_pk,
-                'meter_code': instance['data'].meter_code,
-                'fallo': self.get_falla_desc(instance['data']),
-                'fecha': self.get_alarm_date(instance['data']),
-            }
-        elif instance['tipo'] == 'incidencia':
-            return {
-                'tipo': "INCIDENCIA",
-                'id': instance['data'].incidencia_id,
-                'meter_code': instance['data'].meter_code,
-                'fallo': self.get_falla_desc(instance['data']),
-                'fecha': instance['data'].fecha_incidencia,
-            }
-    
-    def get_falla_desc(self, obj):
-        # Obtén el campo fallo_desc del modelo Alarma
-        return obj.falla.falla_desc if obj.falla else None
-
-    def get_alarm_date(self, obj):
-        # Convierte los enteros a strings y rellena ceros a la izquierda si es necesario
-        if hasattr(obj, 'alarm_time_id') and hasattr(obj, 'alarm_timestamp_id'):
-            date_str = f"{obj.alarm_time_id:08d}"
-            time_str = f"{obj.alarm_timestamp_id:06d}"
-            try:
-                date_obj = datetime.strptime(date_str, "%Y%m%d")
-                time_obj = datetime.strptime(time_str, "%H%M%S").time()
-                # Combina la fecha y la hora en un solo datetime
-                combined_datetime = datetime.combine(date_obj, time_obj)
-                # Formatea como "YYYY/MM/DD HH:MM:SS"
-                return combined_datetime.strftime("%Y/%m/%d %H:%M:%S")
-            except ValueError:
-                return None
-        return None
     
 #Serializador para los registros de incidencias
 class VistaCombinadaSerializer(serializers.ModelSerializer):
