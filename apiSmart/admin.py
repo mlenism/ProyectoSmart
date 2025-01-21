@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Meter, Tapa
+from .meters.models import Meter
+from .shared.models import Tapa
 from .alarms.models import Alarma
 # Register your models here.
 

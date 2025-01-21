@@ -6,7 +6,7 @@ router = DefaultRouter()
 router.register(r'', views.AlarmViewSet, basename='alarmas')
 
 urlpatterns = [
-    path('alarmas/autocomplete-alarma/', views.AlarmaAutocompleteView.as_view(), name='alarma-autocomplete'),
+    path('autocomplete-alarma/', views.AlarmaAutocompleteView.as_view(), name='alarma-autocomplete'),
 ]
 
 # Incluye las rutas del router

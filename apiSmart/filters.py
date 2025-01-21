@@ -1,5 +1,6 @@
 import django_filters
-from .models import Meter, Alarma
+from meters.models import Meter
+from alarms.models import Alarma  
 
 class MeterFilter(django_filters.FilterSet):
     creator = django_filters.CharFilter(lookup_expr='icontains')  # Filtra insensible a mayúsculas/minúsculas

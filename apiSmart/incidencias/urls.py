@@ -6,7 +6,7 @@ router = DefaultRouter()
 router.register(r'', views.IncidenciaCreateView, basename='incidencias')
 
 urlpatterns = [
-    path('incidencias/conteo-incidencias/', views.ConteoIncidenciasBase.as_view(), name='conteo_incidencias'),
+    path('conteo-incidencias/', views.ConteoIncidenciasBase.as_view(), name='conteo_incidencias'),
 ]
 
 # Incluye las rutas del router
