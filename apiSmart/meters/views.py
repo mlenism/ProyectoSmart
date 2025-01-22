@@ -177,7 +177,7 @@ class MedidoresExclusivosPorGatewayAPIView(APIView):
                     fh.meter_id,
                     COUNT(*) AS lecturas -- Conteo de lecturas por medidor
                 FROM
-                    final_hechos fh
+                    smart_med.final_hechos fh
                 JOIN
                     final_medidores fm ON fh.meter_id = fm.meter_code -- Unir con la tabla de medidores
                 WHERE
@@ -203,7 +203,7 @@ class MedidoresExclusivosPorGatewayAPIView(APIView):
                     COUNT(DISTINCT mg.meter_id) AS medidores_exclusivos,
                     COALESCE(SUM(mg.lecturas), 0) AS total_lecturas -- Sumar las lecturas de los medidores exclusivos
                 FROM
-                    stg3_gateways g
+                    smart_med.stg3_gateways g
                 LEFT JOIN
                     medidores_por_gateway mg ON upper(mg.gateway_id) = g.gateway_id
                 JOIN
@@ -218,7 +218,7 @@ class MedidoresExclusivosPorGatewayAPIView(APIView):
                 COALESCE(cpg.medidores_exclusivos, 0) AS medidores_exclusivos,
                 COALESCE(cpg.total_lecturas, 0) AS total_lecturas
             FROM
-                stg3_gateways g
+                smart_med.stg3_gateways g
             LEFT JOIN
                 conteo_por_gateway cpg ON g.gateway_id = cpg.gateway_id -- Incluye gateways sin medidores exclusivos
             WHERE
