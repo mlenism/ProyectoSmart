@@ -108,6 +108,7 @@ class GatewayMySqlCreateView(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         gateway_id = request.query_params.get('gateway_id', None)
+        service_center = request.query_params.get('service_center', None)
 
         # Obtener lista de gateway_ids
         if gateway_id:
@@ -133,6 +134,7 @@ class GatewayMySqlCreateView(viewsets.ModelViewSet):
         gateway_data = Gateway.objects.filter(gateway_id__in=gateway_id_list).values(
             'gateway_id', 'latitude', 'longitude', 'service_center'
         )
+
         gateway_data_dict = {gw['gateway_id']: gw for gw in gateway_data}
 
         # Preparar datos de respuesta combinando los datos de EquipStatus y Gateway
@@ -150,6 +152,16 @@ class GatewayMySqlCreateView(viewsets.ModelViewSet):
                 'online_status': gateway.online_status,
                 # Otros campos según sea necesario
             })
+
+        if service_center:
+            # Dividir el parámetro `service_center` en una lista de valores
+            creator_list = [c.strip() for c in service_center.split(',')]
+            
+            # Filtrar response_data usando una comprensión de listas
+            response_data = [
+                item for item in response_data 
+                if item.get('service_center') in creator_list
+            ]
 
         # Ordenar resultados si se proporciona un parámetro de ordenación
         ordering = request.query_params.get('ordering')
