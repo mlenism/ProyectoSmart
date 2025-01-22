@@ -168,3 +168,98 @@ class GatewayMySqlCreateView(viewsets.ModelViewSet):
         # Si no hay paginación, devolver el conjunto completo
         serializer = self.get_serializer(response_data, many=True)
         return Response(serializer.data)
+
+class GatewayAutocompleteMySQLView(viewsets.ModelViewSet):
+    serializer_class = CombinedEquipStatusSerializer
+    pagination_class = CustomPageNumberPagination
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+
+    def get_queryset(self):
+        return EquipStatus.objects.none()  # Retorna un queryset vacío.
+
+    def list(self, request, *args, **kwargs):
+        search_term = request.query_params.get('search', '')
+
+        # Consultar EquipStatus en MySQL principal
+        queryset_mysql = EquipStatus.objects.using('mysql_db').filter(equip_id__icontains=search_term)
+
+        # Identificar gateways faltantes
+        found_ids = queryset_mysql.values_list('equip_id', flat=True)
+
+        # Consultar en MySQL YGP2 los que faltan
+        queryset_mysql_ygp2 = EquipStatus.objects.using('mysql_db_ygp2').filter(equip_id__icontains=search_term)
+
+        # Combinar resultados
+        combined_results = list(queryset_mysql) + list(queryset_mysql_ygp2)
+
+        # Preparar respuesta
+        response_data = [
+            {
+                'equip_id': gateway.equip_id,
+                'last_update_time': gateway.last_update_time,
+                'online_status': gateway.online_status,
+                # Otros campos según sea necesario
+            }
+            for gateway in combined_results
+        ]
+
+        # Ordenar resultados si se proporciona un parámetro de ordenación
+        ordering = request.query_params.get('ordering')
+        if ordering:
+            reverse = ordering.startswith('-')
+            ordering_key = ordering.lstrip('-')
+            response_data.sort(key=lambda x: x.get(ordering_key), reverse=reverse)
+
+        # Paginación
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(response_data, request)
+        if page is not None:
+            return paginator.get_paginated_response(page)
+
+        # Si no hay paginación, devolver todos los datos
+        return Response(response_data)
+
+class OnlineGatewaysCountAPIView(APIView):
+    """
+    Vista para contar medidores con online_status=1 usando la lógica de GatewayMySqlCreateView.
+    """
+
+    def get(self, request, *args, **kwargs):
+        try:
+            gateway_id = request.query_params.get('gateway_id', None)
+
+            # Obtener lista de gateway_ids
+            if gateway_id:
+                gateway_id_list = [c.strip() for c in gateway_id.split(',')]
+            else:
+                gateway_id_list = list(Gateway.objects.values_list('gateway_id', flat=True))
+
+            # Consultar EquipStatus en MySQL
+            queryset = EquipStatus.objects.using('mysql_db').filter(
+                equip_id__in=gateway_id_list, online_status=1
+            )
+
+            # Identificar gateways faltantes
+            missing_gateways = set(gateway_id_list) - set(queryset.values_list('equip_id', flat=True))
+
+            # Consultar en el segundo servidor MySQL si faltan gateways
+            if missing_gateways:
+                queryset_other_server = EquipStatus.objects.using('mysql_db_ygp2').filter(
+                    equip_id__in=missing_gateways, online_status=1
+                )
+            else:
+                queryset_other_server = []
+
+            # Contar registros combinados
+            total_online_count = queryset.count() + len(queryset_other_server)
+
+            return Response({
+                "online_count": total_online_count,
+                "message": "Conteo de medidores con online_status=1 obtenido con éxito."
+            })
+
+        except Exception as e:
+            return Response({
+                "error": str(e),
+                "message": "Ocurrió un error al obtener el conteo."
+            }, status=500)
