@@ -1,67 +1,15 @@
 from rest_framework import viewsets
 from rest_framework.views import APIView
-from .alarms.models import Alarma
-from .incidencias.models import Incidencia
 from .models import Hechos, VistaCombinada
 from datetime import datetime
-from django.views import View
 from rest_framework import filters
 from rest_framework.response import Response
 from .serializer import VistaCombinadaSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from .pagination import CustomPageNumberPagination
 from django.db.models import F
-from rest_framework import status
-from django.conf import settings
-from itertools import chain
-import os
-import mimetypes
 ##import joblib  # o usar keras si es un modelo Keras
-from rest_framework.views import APIView
-import os
-from rest_framework.views import APIView
 from datetime import datetime
-from django.views import View
-from django.http import FileResponse, HttpResponse
-print(os.path)
-
-class DownloadTemplateView(View):
-    def get(self, request, *args, **kwargs):
-        # Ruta absoluta o relativa del archivo
-        file_path = os.path.join('static', 'templates',  'PLANTILLA - INCIDENCIAS.xlsx')
-        
-        try:
-            # Abrir el archivo en modo binario
-            response = FileResponse(open(file_path, 'rb'), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            response['Content-Disposition'] = 'attachment; filename="PLANTILLA - INCIDENCIAS.xlsx"'
-            return response
-        except FileNotFoundError:
-            # Retornar un mensaje de error si no se encuentra el archivo
-            return HttpResponse("Archivo no encontrado", status=404)
-
-
-
-class FileUploadView(APIView):
-    def post(self, request, *args, **kwargs):
-        file = request.FILES.get('file')  # Obtener el archivo de la solicitud
-        if not file:
-            return Response({"error": "No se proporcionó ningún archivo"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Validar que el archivo sea un Excel
-        mime_type, _ = mimetypes.guess_type(file.name)
-        if mime_type not in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']:
-            return Response({"error": "El archivo proporcionado no es un archivo Excel."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Renombrar el archivo a "incidencias"
-        new_filename = 'incidencias.xlsx'
-        save_path = os.path.join(settings.MEDIA_ROOT, new_filename)
-
-        # Guardar el archivo en la ruta especificada
-        with open(save_path, 'wb+') as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
-
-        return Response({"message": f"Archivo {new_filename} subido exitosamente."}, status=status.HTTP_201_CREATED)
 
 class VistaCombinadaCreateView(viewsets.ModelViewSet):
     

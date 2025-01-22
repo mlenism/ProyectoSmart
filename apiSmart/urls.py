@@ -20,12 +20,11 @@ urlpatterns = [
     path('dags/', include('apiSmart.airflow.urls')), #Dags podríoan fallar, revisar
     path('meters/', include('apiSmart.meters.urls')), 
     path('gateways/', include('apiSmart.gateways.urls')), 
+    path('files/', include('apiSmart.files.urls')),
     path('unique-creators/', distinctViews.UniqueCreatorListView.as_view(), name='unique-creators'),
     path('unique-status/', distinctViews.UniqueStatusListView.as_view(), name='unique-status'),
     path('unique-falla-type/', distinctViews.UniqueFallaTypeListView.as_view(), name='unique-falla-type'),
     path('autocomplete-combinada/', views.CombinedAutocompleteView.as_view(), name='combined-autocomplete'),
-    path('upload/', views.FileUploadView.as_view(), name='file-upload'),
-    path('download-template/', views.DownloadTemplateView.as_view(), name='download_template'),
 ]
 
 # Servir archivos media en desarrollo
