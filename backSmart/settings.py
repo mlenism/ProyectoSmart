@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 # Define el directorio donde se guardarán los archivos subidos
 MEDIA_URL = '/C:/Users/danie/OneDrive/Escritorio/ProyectoSmartMed/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'ProyectoSmartMed\FuentesSmartMed')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'ProyectoSmartMed', 'FuentesSmartMed')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     'django_filters',#Filtros dinámicos para las consultas
     'apiSmart',#Inicialización de la aplicación
     'coreapi',#Paquete para la API
-    'channels'#Paquete para el webSocket
+    'channels',#Paquete para el webSocket
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -81,6 +82,7 @@ CORS_ALLOW_METHODS = [
     'PUT',
     'DELETE',
     'OPTIONS',
+    'PATCH'
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -119,7 +121,7 @@ DATABASES = {
         'NAME': 'airflow',#nombre de la base de datos del servidor
         'USER': 'arq', #Usuario arq
         'PASSWORD': 'airflow', #contraseña password
-        'HOST': '20.0.1.136',#'20.0.1.136', #Host (modificar como ruta remota en caso de error en la nube
+        'HOST': '3.135.197.152',#'20.0.1.136', #Host (modificar como ruta remota en caso de error en la nube
         'PORT': '5432',
         'OPTIONS': {
             'options': '-c search_path=django_api,smart_med'
@@ -202,6 +204,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 100,  # Tamaño de página por defecto
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'apiSmart.authentication.CookieJWTAuthentication', #Autenticación por token
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 
 }
 
