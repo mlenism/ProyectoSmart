@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db import connection
 from rest_framework.exceptions import ValidationError
+from django.db.models import F
 
 class IncidenciaCreateView(viewsets.ModelViewSet):
     
@@ -58,6 +59,54 @@ class IncidenciaCreateView(viewsets.ModelViewSet):
         else:
             serializer.save()
 
+
+class IncidenciaAutocompleteView(APIView):
+    queryset = Incidencia.objects.all()
+    serializer_class = IncidenciaSerializer
+    pagination_class = CustomPageNumberPagination
+
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    ordering_fields = [
+        'incidencia_id',
+        'meter_code',
+        'fecha_incidencia',
+        'falla'
+    ]
+
+    def get(self, request):
+        query = request.GET.get('q', '')
+        fecha_incidencia_gte = request.GET.get('fecha_incidencia_gte')
+        fecha_incidencia_lte = request.GET.get('fecha_incidencia_lte')
+        fecha_incidencia_exact = request.GET.get('fecha_incidencia_exact')
+
+        results = Incidencia.objects.all()
+
+        if query:
+            results = results.filter(meter_code__icontains=query)
+
+        # Aplicar filtros de rango y exactitud
+        if fecha_incidencia_gte:
+            results = results.filter(fecha_incidencia__gte=fecha_incidencia_gte)
+        if fecha_incidencia_lte:
+            results = results.filter(fecha_incidencia__lte=fecha_incidencia_lte)
+        if fecha_incidencia_exact:
+            results = results.filter(fecha_incidencia=fecha_incidencia_exact)
+
+        # Ordenar los resultados
+        results = results.order_by(
+            F('fecha_incidencia').desc(nulls_last=True),
+            F('incidencia_id').desc(nulls_last=True)
+        )
+
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(results, request)
+        if page is not None:
+            serializer = IncidenciaSerializer(page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        
+        serializer = IncidenciaSerializer(results, many=True)
+        return Response(serializer.data)
+    
 class ConteoIncidenciasBase(APIView):
     def get(self, request):
         try:

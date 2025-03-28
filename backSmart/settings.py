@@ -121,7 +121,7 @@ DATABASES = {
         'NAME': 'airflow',#nombre de la base de datos del servidor
         'USER': 'arq', #Usuario arq
         'PASSWORD': 'airflow', #contraseña password
-        'HOST': '3.135.197.152',#'20.0.1.136', #Host (modificar como ruta remota en caso de error en la nube
+        'HOST': '20.0.1.136',#'20.0.1.136', #Host (modificar como ruta remota en caso de error en la nube
         'PORT': '5432',
         'OPTIONS': {
             'options': '-c search_path=django_api,smart_med'

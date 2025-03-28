@@ -51,3 +51,25 @@ def is_authenticated(request):
         return Response({'authenticated': True})
     return Response({'authenticated': False}, status=401)
 
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_user(request, user_id):
+    user = request.user
+    
+    # Verificar si el usuario es superusuario
+    if not user.is_superuser:
+        return Response({"error": "No tienes permiso para eliminar usuarios."}, status=403)
+    
+    try:
+        user_to_delete = User.objects.get(id=user_id)
+        
+        # Evitar que un superusuario se elimine a sí mismo
+        if user == user_to_delete:
+            return Response({"error": "No puedes eliminar tu propia cuenta."}, status=400)
+
+        user_to_delete.delete()
+        return Response({"message": f"Usuario {user_to_delete.username} eliminado exitosamente."}, status=200)
+    
+    except User.DoesNotExist:
+        return Response({"error": "Usuario no encontrado."}, status=404)
+

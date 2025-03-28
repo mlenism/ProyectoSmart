@@ -7,6 +7,7 @@ router.register(r'', views.IncidenciaCreateView, basename='incidencias')
 
 urlpatterns = [
     path('conteo-incidencias/', views.ConteoIncidenciasBase.as_view(), name='conteo_incidencias'),
+    path('autocomplete-incidencias/', views.IncidenciaAutocompleteView.as_view(), name='autocomplete_incidencias'),
 ]
 
 # Incluye las rutas del router
