@@ -19,7 +19,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 value=access_token, 
                 httponly=True,
                 secure=False,
-                samesite='None',
+                samesite='Lax',
                 path='/'
             )
 
@@ -28,7 +28,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 value=refresh_token, 
                 httponly=True,
                 secure=False,
-                samesite='None',
+                samesite='Lax',
                 path='/'
             )
 
@@ -60,8 +60,8 @@ class CustomRefreshTokenView(TokenRefreshView):
                 key='access_token', 
                 value=access_token, 
                 httponly=True,
-                secure=True,
-                samesite='None',
+                secure=False,
+                samesite='Lax',
                 path='/'
             )
 
