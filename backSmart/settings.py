@@ -112,6 +112,7 @@ ASGI_APPLICATION = 'backSmart.asgi.application' #modificar archivo asgi.py para 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+
 #Por default nos estamos conectando al servidor de postgres
 DATABASES = {
     'default': {

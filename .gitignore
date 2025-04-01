@@ -15,6 +15,9 @@ __pycache__/
 # Archivos de configuración locales
 .env
 
+# Ignorar CSV en la carpeta específica
+ProyectoSmartMed/FuentesSmartMed/*.csv
+
 
 ProyectoSmartMed/FuentesSmartMed/*.csv
 ProyectoSmartMed/FuentesSmartMed/*.csv
