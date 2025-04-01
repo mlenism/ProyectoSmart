@@ -18,7 +18,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 key='access_token', 
                 value=access_token, 
                 httponly=True,
-                secure=True,
+                secure=False,
                 samesite='None',
                 path='/'
             )
@@ -27,7 +27,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 key='refresh_token', 
                 value=refresh_token, 
                 httponly=True,
-                secure=True,
+                secure=False,
                 samesite='None',
                 path='/'
             )
