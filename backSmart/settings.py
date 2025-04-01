@@ -108,10 +108,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backSmart.wsgi.application'
 ASGI_APPLICATION = 'backSmart.asgi.application' #modificar archivo asgi.py para la consifuración del websocket
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 
 #Por default nos estamos conectando al servidor de postgres
 DATABASES = {
@@ -195,6 +193,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost',
     'http://host.docker.internal:8000',
     'http://localhost:5174',
+    'http://3.135.197.152:3000',  # Ajusta según el puerto de tu frontend
+    'http://localhost:3000',  # Ajusta según el puerto de tu frontend
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -219,3 +219,9 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels.layers.InMemoryChannelLayer', #Canal default para la conexion del websocket
     },
 }
+
+SESSION_COOKIE_SECURE = False  # Asegura que las cookies se envíen solo a través de HTTPS
+CSRF_COOKIE_SECURE = False  # Asegura que las cookies CSRF se envíen solo a través de HTTPS
+#SESSION_COOKIE_SAMESITE = 'None'  # Permite el envío de cookies en solicitudes de origen cruzado (solo para HTTPS)
+#CSRF_COOKIE_SAMESITE = 'None'  # Permite el envío de cookies CSRF en solicitudes de origen cruzado
+
