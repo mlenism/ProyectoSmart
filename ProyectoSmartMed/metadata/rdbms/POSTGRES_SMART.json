@@ -4,7 +4,7 @@
       "databaseName": "airflow",
       "pluginId": "POSTGRESQL",
       "accessType": 0,
-      "hostname": "20.0.1.136",
+      "hostname": "3.135.197.152",
       "password": "Encrypted 2be98afc86aa7f2e4cb18a762d89ea0cd",
       "pluginName": "PostgreSQL",
       "port": "5432",

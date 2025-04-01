@@ -83,7 +83,7 @@ class EquipmentStatusLogListView(APIView):
 
     def get(self, request, equip_id):
         # Filtrar los registros según el equip_id
-        queryset = EquipmentStatusLog.objects.using('mysql_db').filter(equip_id=equip_id)
+        queryset = EquipmentStatusLog.objects.using('mysql_db').filter(equip_id=equip_id).order_by('-status_time')
 
         # Configurar la paginación
         paginator = self.pagination_class()

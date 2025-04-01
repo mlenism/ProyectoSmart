@@ -26,11 +26,6 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Table input</from>
-      <to>Set variables</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>Set variables</from>
       <to>Dummy (do nothing)</to>
       <enabled>Y</enabled>
@@ -38,6 +33,11 @@
     <hop>
       <from>Dummy (do nothing)</from>
       <to>Dummy (do nothing) 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Table input</from>
+      <to>Set variables</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -88,6 +88,7 @@
     </partitioning>
     <fields>
       <field>
+        <default_value>2025-01-01 00:00:00</default_value>
         <field_name>fecha_inicio_mes_pasado</field_name>
         <variable_name>lastDate</variable_name>
         <variable_type>ROOT_WORKFLOW</variable_type>
@@ -113,7 +114,7 @@
     </partitioning>
     <fields>
       <field>
-        <default_value/>
+        <default_value>2025-02-01 00:00:00</default_value>
         <field_name>fecha_fin_mes_pasado</field_name>
         <variable_name>endDate</variable_name>
         <variable_type>ROOT_WORKFLOW</variable_type>
@@ -147,7 +148,7 @@
     <variables_active>N</variables_active>
     <attributes/>
     <GUI>
-      <xloc>192</xloc>
+      <xloc>160</xloc>
       <yloc>208</yloc>
     </GUI>
   </transform>

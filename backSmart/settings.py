@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     'django_filters',#Filtros dinámicos para las consultas
     'apiSmart',#Inicialización de la aplicación
     'coreapi',#Paquete para la API
-    'channels'#Paquete para el webSocket
+    'channels',#Paquete para el webSocket
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -81,6 +82,7 @@ CORS_ALLOW_METHODS = [
     'PUT',
     'DELETE',
     'OPTIONS',
+    'PATCH'
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -202,6 +204,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 100,  # Tamaño de página por defecto
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'apiSmart.authentication.CookieJWTAuthentication', #Autenticación por token
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 
 }
 
