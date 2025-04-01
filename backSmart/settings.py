@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 # Define el directorio donde se guardarán los archivos subidos
 MEDIA_URL = '/C:/Users/danie/OneDrive/Escritorio/ProyectoSmartMed/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'ProyectoSmartMed\FuentesSmartMed')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'ProyectoSmartMed', 'FuentesSmartMed')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 

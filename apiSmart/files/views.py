@@ -38,6 +38,8 @@ class FileUploadView(APIView):
         # Renombrar el archivo a "incidencias"
         new_filename = 'incidencias.xlsx'
         save_path = os.path.join(settings.MEDIA_ROOT, new_filename)
+        save_path = os.path.normpath(save_path)  # Normaliza la ruta antes de usarla
+
 
         # Guardar el archivo en la ruta especificada
         try:
