@@ -144,6 +144,10 @@ DATABASES = {
     }
 }
 
+SIMPLE_JWT = {
+    'JWT_COOKIE_SECURE': False,  # Deshabilitar el atributo 'Secure' en la cookie
+    'JWT_COOKIE_SAMESITE': 'None',  # Permitir cookies en solicitudes de origen cruzado
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -222,6 +226,6 @@ CHANNEL_LAYERS = {
 
 SESSION_COOKIE_SECURE = False  # Asegura que las cookies se envíen solo a través de HTTPS
 CSRF_COOKIE_SECURE = False  # Asegura que las cookies CSRF se envíen solo a través de HTTPS
-#SESSION_COOKIE_SAMESITE = 'None'  # Permite el envío de cookies en solicitudes de origen cruzado (solo para HTTPS)
-#CSRF_COOKIE_SAMESITE = 'None'  # Permite el envío de cookies CSRF en solicitudes de origen cruzado
+SESSION_COOKIE_SAMESITE = 'None'  # Permite el envío de cookies en solicitudes de origen cruzado (solo para HTTPS)
+CSRF_COOKIE_SAMESITE = 'None'  # Permite el envío de cookies CSRF en solicitudes de origen cruzado
 
