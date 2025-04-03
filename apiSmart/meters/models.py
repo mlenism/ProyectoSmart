@@ -16,6 +16,7 @@ class Meter(models.Model):
     create_time_id = models.IntegerField()  # Campo para la fecha en formato YYYYMMDD
     create_ts_id = models.IntegerField()    # Campo para la hora en formato HHMMSS
     status_update_date = models.DateTimeField()
+    cobertura = models.CharField(max_length=64)
 
     class Meta:
         db_table = 'smart_med\".\"final_medidores'

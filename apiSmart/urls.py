@@ -22,6 +22,7 @@ urlpatterns = [
     path('dags/', include('apiSmart.airflow.urls')), #Dags podríoan fallar, revisar
     path('meters/', include('apiSmart.meters.urls')), 
     path('gateways/', include('apiSmart.gateways.urls')), 
+    path('lecturas/', include('apiSmart.readings.urls')),
     path('files/', include('apiSmart.files.urls')),
     path('users/', include('apiSmart.users.urls')),
     path('unique-creators/', distinctViews.UniqueCreatorListView.as_view(), name='unique-creators'),

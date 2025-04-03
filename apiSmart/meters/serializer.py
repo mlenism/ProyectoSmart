@@ -26,7 +26,8 @@ class Meterserializer(serializers.ModelSerializer):
             'tapa_id', #valor viene de la tabla final_tapas
             'tapa_desc', #valor viene de la tabla final_tapas
             'create_date', #Valor nuevo creado con los id de fechas
-            'status_update_date'
+            'status_update_date',
+            'cobertura'
             ]
     
     def get_tapa_desc(self, obj):
