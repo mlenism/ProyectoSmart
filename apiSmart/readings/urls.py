@@ -7,6 +7,7 @@ router = DefaultRouter()
 urlpatterns = [
     path('tipo-lectura/<str:meter_id>/', views.MeterStatusView.as_view(), name='medidores_exclusivos_por_gateway'),
     path('ultima-lectura/<str:meter_id>/', views.LastReadingView.as_view(), name='ultima_lectura'),
+    path("meter-readings-range/<str:meter_id>", views.MeterReadingsByDateRangeView.as_view(), name='registros_lectura'),
 ]
 
 # Incluye las rutas del router

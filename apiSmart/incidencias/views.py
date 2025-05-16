@@ -12,6 +12,8 @@ from rest_framework import status
 from django.db import connection
 from rest_framework.exceptions import ValidationError
 from django.db.models import F
+from datetime import datetime, timedelta
+from django.utils.timezone import make_aware
 
 class IncidenciaCreateView(viewsets.ModelViewSet):
     
@@ -22,30 +24,46 @@ class IncidenciaCreateView(viewsets.ModelViewSet):
 
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     ordering_fields = ['incidencia_id',
-                       'meter_code'
+                       'meter_code',
                        'fecha_incidencia',
                        'falla'
                         ]
-    
+
     def get_queryset(self):
-        
         queryset = super().get_queryset()
-        incidencia_id = self.request.query_params.get('incidencia_id') #Habilitar filtrado por status
-        fecha_incidencia = self.request.query_params.get('fecha_incidencia') #Habilitar filtrado por tapa_id
-        falla = self.request.query_params.get('falla') #Habilitar filtrado por create_date
-        meter_code = self.request.query_params.get('meter_code') #Habilitar filtrado por create_date
+
+        incidencia_id = self.request.query_params.get('incidencia_id')
+        fecha_incidencia = self.request.query_params.get('fecha_incidencia')
+        falla = self.request.query_params.get('falla')
+        meter_code = self.request.query_params.get('meter_code')
+        fecha_gte_str = self.request.query_params.get('fecha_gte')
+        fecha_lte_str = self.request.query_params.get('fecha_lte')
 
         if incidencia_id:
-            # Split the creator query parameter by comma to handle multiple values
             incidencia_id_list = [c.strip() for c in incidencia_id.split(',')]
             queryset = queryset.filter(incidencia_id__in=incidencia_id_list)
+
         if fecha_incidencia:
             fecha_incidencia_list = [c.strip() for c in fecha_incidencia.split(',')]
             queryset = queryset.filter(fecha_incidencia__in=fecha_incidencia_list)
+
         if falla:
             queryset = queryset.filter(falla=falla)
+
         if meter_code:
             queryset = queryset.filter(meter_code=meter_code)
+
+        if fecha_gte_str and fecha_lte_str:
+            try:
+                fecha_gte = make_aware(datetime.strptime(fecha_gte_str, "%Y%m%d")) + timedelta(days=1)
+                fecha_lte = make_aware(datetime.strptime(fecha_lte_str, "%Y%m%d")) + timedelta(days=1)
+                queryset = queryset.filter(
+                    fecha_incidencia__gte=fecha_gte,
+                    fecha_incidencia__lte=fecha_lte  # NOT __lte
+                )
+            except ValueError:
+                pass
+
         return queryset
     
 
