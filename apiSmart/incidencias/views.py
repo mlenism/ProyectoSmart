@@ -26,7 +26,9 @@ class IncidenciaCreateView(viewsets.ModelViewSet):
     ordering_fields = ['incidencia_id',
                        'meter_code',
                        'fecha_incidencia',
-                       'falla'
+                       'falla',
+                       'falla__falla_desc',
+                       'falla_type'
                         ]
 
     def get_queryset(self):
@@ -35,9 +37,19 @@ class IncidenciaCreateView(viewsets.ModelViewSet):
         incidencia_id = self.request.query_params.get('incidencia_id')
         fecha_incidencia = self.request.query_params.get('fecha_incidencia')
         falla = self.request.query_params.get('falla')
+        falla_desc = self.request.query_params.get('falla_desc')
+        falla_type = self.request.query_params.get('falla_type')
         meter_code = self.request.query_params.get('meter_code')
         fecha_gte_str = self.request.query_params.get('fecha_gte')
         fecha_lte_str = self.request.query_params.get('fecha_lte')
+
+        if falla_type:
+            falla_type_list = [c.strip() for c in falla_type.split(',')]
+            queryset = queryset.filter(falla__falla_type__in=falla_type_list)
+
+        if falla_desc:
+            falla_desc_list = [c.strip() for c in falla_desc.split(',')]
+            queryset = queryset.filter(falla__falla_desc__in=falla_desc_list)
 
         if incidencia_id:
             incidencia_id_list = [c.strip() for c in incidencia_id.split(',')]
