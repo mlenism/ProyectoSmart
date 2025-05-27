@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Meter
 from datetime import datetime
+from .models import Meterdata
 
 #Serializador para los Medidor
 class Meterserializer(serializers.ModelSerializer):
@@ -10,6 +11,11 @@ class Meterserializer(serializers.ModelSerializer):
 
     #Descripcion del tipo de tapa
     tapa_desc = serializers.SerializerMethodField()
+
+    #direccion del medidor
+    direccion = serializers.SerializerMethodField()
+
+    usuario = serializers.SerializerMethodField()
 
     class Meta:
         model=Meter
@@ -27,8 +33,26 @@ class Meterserializer(serializers.ModelSerializer):
             'tapa_desc', #valor viene de la tabla final_tapas
             'create_date', #Valor nuevo creado con los id de fechas
             'status_update_date',
-            'cobertura'
+            'cobertura',
+            'direccion',
+            'usuario'
             ]
+
+    def get_direccion(self, obj):
+        try:
+            data = Meterdata.objects.get(meter_code=obj.meter_code)
+            address = data.address
+            return address
+        except Meterdata.DoesNotExist:
+            return None
+
+    def get_usuario(self, obj):
+        try:
+            data = Meterdata.objects.get(meter_code=obj.meter_code)
+            customer = data.costumer
+            return customer
+        except Meterdata.DoesNotExist:
+            return None
     
     def get_tapa_desc(self, obj):
         # Obtener el nombre de la tapa a partir del campo tapa_id
@@ -49,3 +73,9 @@ class Meterserializer(serializers.ModelSerializer):
             return combined_datetime.strftime("%Y/%m/%d %H:%M:%S")
         except ValueError:
             return None
+
+
+class MeterdataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Meterdata
+        fields = ['meter_id', 'meter_code', 'costumer', 'address']

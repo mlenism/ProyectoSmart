@@ -80,7 +80,6 @@ class MeterViewSet(viewsets.ModelViewSet):
                     F('create_time_id').asc(nulls_last=True),
                     F('create_ts_id').asc(nulls_last=True)
                 )
-
         return queryset
     
 

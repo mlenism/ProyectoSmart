@@ -1,4 +1,4 @@
-from django.db import models 
+from django.db import models
 
 #Modelo para las fallas referentes a las alarmas
 class Falla(models.Model):
