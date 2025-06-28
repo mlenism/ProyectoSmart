@@ -265,8 +265,28 @@ class OnlineGatewaysCountAPIView(APIView):
             # Contar registros combinados
             total_online_count = queryset.count() + len(queryset_other_server)
 
+            # Consultar gatways no online
+            queryset = EquipStatus.objects.using('mysql_db').filter(
+                equip_id__in=gateway_id_list, online_status=0
+            )
+
+            # Identificar gateways faltantes
+            missing_gateways = set(gateway_id_list) - set(queryset.values_list('equip_id', flat=True))
+
+            # Consultar en el segundo servidor MySQL si faltan gateways
+            if missing_gateways:
+                queryset_other_server = EquipStatus.objects.using('mysql_db_ygp2').filter(
+                    equip_id__in=missing_gateways, online_status=0
+                )
+            else:
+                queryset_other_server = []
+
+            # Contar registros combinados
+            total_offline_count = queryset.count() + len(queryset_other_server)
+
             return Response({
                 "online_count": total_online_count,
+                "offline_count": total_offline_count,
                 "message": "Conteo de medidores con online_status=1 obtenido con éxito."
             })
 

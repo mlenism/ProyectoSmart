@@ -1,4 +1,5 @@
-from .models import Meter
+from apiSmart.readings.models import FinalHechos
+from .models import Meter, Meterdata
 from .serializer import Meterserializer
 from ..pagination import CustomPageNumberPagination
 from rest_framework import viewsets
@@ -18,6 +19,10 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 from django.http import JsonResponse
 from rest_framework.views import APIView
+from calendar import monthrange
+from django.db.models import Count, Case, When, IntegerField
+from django.utils.timezone import now
+
 
 from datetime import datetime
 from django.http import JsonResponse
@@ -303,7 +308,7 @@ class MedidoresNoExclusivosPorGatewayAPIView(APIView):
         WHERE
             {service_center_clause}
         ORDER BY
-            medidores_conectados DESC;
+            lecturas_registradas DESC;
         """
 
         with connection.cursor() as cursor:
@@ -323,3 +328,86 @@ class MedidoresNoExclusivosPorGatewayAPIView(APIView):
         ]
 
         return Response(response_data, status=status.HTTP_200_OK)
+
+class MultiMeterStatusAndReadingView(APIView):
+    def get(self, request):
+        meter_codes = request.query_params.getlist("meter_ids")
+        include_fields = request.query_params.getlist("inc")
+
+        if not meter_codes:
+            return Response({"error": "You must provide a list of meter_ids."}, status=400)
+
+        # meter_code is always included
+        if "meter_code" not in include_fields:
+            include_fields.append("meter_code")
+
+        meters = Meter.objects.filter(meter_code__in=meter_codes)
+        serialized = Meterserializer(meters, many=True)
+        serialized_data = serialized.data
+
+        # Prepare for monthly status calculation only if needed
+        compute_status = "typeReading" in include_fields
+        compute_last_reading = "recv_time_id" in include_fields or "real_volume" in include_fields
+
+        if compute_status:
+            today = now().date()
+            if today.month == 1:
+                year, month = today.year - 1, 12
+            else:
+                year, month = today.year, today.month - 1
+            total_days = monthrange(year, month)[1]
+
+        results = []
+
+        for meter_dict in serialized_data:
+            meter_code = meter_dict["meter_code"]
+            result = meter_dict.copy()
+
+            # Compute latest reading if needed
+            if compute_last_reading:
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        SELECT recv_time_id, real_volume
+                        FROM smart_med.final_hechos
+                        WHERE meter_id = %s
+                        ORDER BY recv_time_id DESC
+                        LIMIT 1;
+                    """, [meter_code])
+                    row = cursor.fetchone()
+
+                if "recv_time_id" in include_fields:
+                    result["recv_time_id"] = row[0] if row else None
+                if "real_volume" in include_fields:
+                    result["real_volume"] = str(row[1]) if row else None
+
+            # Compute status (typeReading) if needed
+            if compute_status:
+                readings = FinalHechos.objects.filter(
+                    meter_id=meter_code,
+                    recv_time_id__startswith=f"{year}{str(month).zfill(2)}"
+                ).values('recv_time_id').annotate(
+                    walkby_count=Count(Case(When(gateway_id='WalkBy', then=1), output_field=IntegerField())),
+                    total_count=Count('recv_time_id')
+                )
+
+                non_walkby_days = sum(1 for r in readings if r['walkby_count'] < r['total_count'])
+                any_reading_days = len(readings)
+
+                if any_reading_days == 0:
+                    status = "SIN LECTURA"
+                elif non_walkby_days == total_days:
+                    status = "DIARIO"
+                elif non_walkby_days > 0:
+                    status = "INTERMITENTE"
+                else:
+                    status = "WALKBY"
+
+                result["typeReading"] = status
+
+            # Return only requested fields
+            filtered = {k: result[k] for k in include_fields if k in result}
+            results.append(filtered)
+
+        return Response(results)
+
+

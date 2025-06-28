@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -114,11 +115,13 @@ ASGI_APPLICATION = 'backSmart.asgi.application' #modificar archivo asgi.py para 
 #Por default nos estamos conectando al servidor de postgres
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'airflow',
-        'USER': 'postgres',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',#Driver de postgres
+        'NAME': 'airflow',#nombre de la base de datos del servidor
+        'USER': 'arq', #Usuario arq
+        'PASSWORD': 'airflow', #contraseña password
+        'HOST': '3.135.197.152',#'20.0.1.136', #Host (modificar como ruta remota en caso de error en la nube
         'PORT': '5432',
         'OPTIONS': {
             'options': '-c search_path=django_api,smart_med'
@@ -132,7 +135,7 @@ DATABASES = {
         'HOST': '54.144.198.184',
         'PORT': '3306',
     },
-    'mysql_db_ygp2': {
+        'mysql_db_ygp2': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ygp2',
         'USER': 'root',
@@ -141,10 +144,42 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'airflow',
+#         'USER': 'postgres',
+#         'PASSWORD': 'password',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#         'OPTIONS': {
+#             'options': '-c search_path=django_api,smart_med'
+#         }
+#     },
+#     'mysql_db': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'ygp1',
+#         'USER': 'root',
+#         'PASSWORD': 'Medileser2019@',
+#         'HOST': '54.144.198.184',
+#         'PORT': '3306',
+#     },
+#     'mysql_db_ygp2': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'ygp2',
+#         'USER': 'root',
+#         'PASSWORD': 'Medileser2019@',
+#         'HOST': '54.144.198.184',
+#         'PORT': '3306',
+#     }
+# }
 
 SIMPLE_JWT = {
     'JWT_COOKIE_SECURE': False,  # Deshabilitar el atributo 'Secure' en la cookie
     'JWT_COOKIE_SAMESITE': 'None',  # Permitir cookies en solicitudes de origen cruzado
+
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=50),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
 # Password validation

@@ -1,0 +1,103 @@
+[2025-06-27T02:22:29.685+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-06-27T02:22:29.796+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: STG4_MEDIDORES.run_hop_pipeline scheduled__2025-06-27T01:21:00+00:00 [queued]>
+[2025-06-27T02:22:29.824+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: STG4_MEDIDORES.run_hop_pipeline scheduled__2025-06-27T01:21:00+00:00 [queued]>
+[2025-06-27T02:22:29.825+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2025-06-27T02:22:29.903+0000] {taskinstance.py:2330} INFO - Executing <Task(DockerOperator): run_hop_pipeline> on 2025-06-27 01:21:00+00:00
+[2025-06-27T02:22:29.937+0000] {warnings.py:110} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:61: DeprecationWarning: This process (pid=65) is multi-threaded, use of fork() may lead to deadlocks in the child.
+  pid = os.fork()
+
+[2025-06-27T02:22:29.945+0000] {standard_task_runner.py:63} INFO - Started process 73 to run task
+[2025-06-27T02:22:29.948+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'STG4_MEDIDORES', 'run_hop_pipeline', 'scheduled__2025-06-27T01:21:00+00:00', '--job-id', '5', '--raw', '--subdir', 'DAGS_FOLDER/apache-hop-dag-simple.py', '--cfg-path', '/tmp/tmp3a4dei46']
+[2025-06-27T02:22:29.961+0000] {standard_task_runner.py:91} INFO - Job 5: Subtask run_hop_pipeline
+[2025-06-27T02:22:30.401+0000] {task_command.py:426} INFO - Running <TaskInstance: STG4_MEDIDORES.run_hop_pipeline scheduled__2025-06-27T01:21:00+00:00 [running]> on host 0b41c6d28592
+[2025-06-27T02:22:30.833+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='STG4_MEDIDORES' AIRFLOW_CTX_TASK_ID='run_hop_pipeline' AIRFLOW_CTX_EXECUTION_DATE='2025-06-27T01:21:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-06-27T01:21:00+00:00'
+[2025-06-27T02:22:30.839+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-06-27T02:22:30.984+0000] {docker.py:493} INFO - Pulling docker image apache/hop:latest
+[2025-06-27T02:22:33.720+0000] {docker.py:507} INFO - latest: Pulling from apache/hop
+[2025-06-27T02:22:47.851+0000] {docker.py:507} INFO - 4f4fb700ef54: Pulling fs layer
+[2025-06-27T02:22:47.853+0000] {docker.py:507} INFO - f18232174bc9: Pulling fs layer
+[2025-06-27T02:22:47.854+0000] {docker.py:507} INFO - d4d2578e96cd: Pulling fs layer
+[2025-06-27T02:22:47.860+0000] {docker.py:507} INFO - f488a4dddc73: Pulling fs layer
+[2025-06-27T02:22:47.877+0000] {docker.py:507} INFO - 19f1029c3f10: Pulling fs layer
+[2025-06-27T02:22:47.878+0000] {docker.py:507} INFO - bf26d906d0f5: Pulling fs layer
+[2025-06-27T02:22:47.880+0000] {docker.py:507} INFO - eb2b48b7cabe: Pulling fs layer
+[2025-06-27T02:22:47.882+0000] {docker.py:507} INFO - 9b6bc2cf1037: Pulling fs layer
+[2025-06-27T02:22:47.971+0000] {docker.py:507} INFO - d4d2578e96cd: Downloading
+[2025-06-27T02:22:47.972+0000] {docker.py:507} INFO - f488a4dddc73: Downloading
+[2025-06-27T02:22:47.975+0000] {docker.py:507} INFO - 19f1029c3f10: Downloading
+[2025-06-27T02:22:47.979+0000] {docker.py:507} INFO - bf26d906d0f5: Downloading
+[2025-06-27T02:22:47.996+0000] {docker.py:507} INFO - eb2b48b7cabe: Downloading
+[2025-06-27T02:22:48.013+0000] {docker.py:507} INFO - 9b6bc2cf1037: Download complete
+[2025-06-27T02:22:48.025+0000] {docker.py:507} INFO - 4f4fb700ef54: Already exists
+[2025-06-27T02:22:48.029+0000] {docker.py:507} INFO - f18232174bc9: Downloading
+[2025-06-27T02:22:48.033+0000] {docker.py:507} INFO - 4f4fb700ef54: Pull complete
+[2025-06-27T02:22:48.183+0000] {docker.py:507} INFO - eb2b48b7cabe: Download complete
+[2025-06-27T02:22:48.224+0000] {docker.py:507} INFO - d4d2578e96cd: Download complete
+[2025-06-27T02:22:49.043+0000] {docker.py:507} INFO - bf26d906d0f5: Download complete
+[2025-06-27T02:22:49.066+0000] {docker.py:507} INFO - f18232174bc9: Download complete
+[2025-06-27T02:22:49.134+0000] {docker.py:507} INFO - f18232174bc9: Extracting
+[2025-06-27T02:22:52.534+0000] {docker.py:507} INFO - 19f1029c3f10: Download complete
+[2025-06-27T02:22:54.038+0000] {docker.py:507} INFO - f18232174bc9: Pull complete
+[2025-06-27T02:23:00.911+0000] {docker.py:507} INFO - d4d2578e96cd: Extracting
+[2025-06-27T02:23:06.516+0000] {docker.py:507} INFO - d4d2578e96cd: Pull complete
+[2025-06-27T02:23:09.853+0000] {docker.py:507} INFO - 19f1029c3f10: Extracting
+[2025-06-27T02:23:24.863+0000] {docker.py:507} INFO - 19f1029c3f10: Pull complete
+[2025-06-27T02:23:30.311+0000] {docker.py:507} INFO - bf26d906d0f5: Extracting
+[2025-06-27T02:23:31.116+0000] {docker.py:507} INFO - bf26d906d0f5: Pull complete
+[2025-06-27T02:23:40.702+0000] {docker.py:507} INFO - f488a4dddc73: Download complete
+[2025-06-27T02:23:40.707+0000] {docker.py:507} INFO - f488a4dddc73: Extracting
+[2025-06-27T02:24:20.315+0000] {docker.py:507} INFO - f488a4dddc73: Pull complete
+[2025-06-27T02:24:20.535+0000] {docker.py:507} INFO - 9b6bc2cf1037: Pull complete
+[2025-06-27T02:24:20.697+0000] {docker.py:507} INFO - eb2b48b7cabe: Pull complete
+[2025-06-27T02:24:21.155+0000] {docker.py:502} INFO - Digest: sha256:950a95da3332a2782706665b58adeed820689d87e0ca5b54df59bc995b2d955e
+[2025-06-27T02:24:21.161+0000] {docker.py:502} INFO - Status: Downloaded newer image for apache/hop:latest
+[2025-06-27T02:24:21.195+0000] {docker.py:366} INFO - Starting docker container from image apache/hop:latest
+[2025-06-27T02:24:21.318+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-06-27T02:24:21.334+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/docker/api/client.py", line 265, in _raise_for_status
+    response.raise_for_status()
+  File "/home/airflow/.local/lib/python3.12/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: http+docker://localhost/v1.50/containers/create
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/baseoperator.py", line 400, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/providers/docker/operators/docker.py", line 509, in execute
+    return self._run_image()
+           ^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/providers/docker/operators/docker.py", line 371, in _run_image
+    return self._run_image_with_mounts([*self.mounts, tmp_mount], add_tmp_variable=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/providers/docker/operators/docker.py", line 398, in _run_image_with_mounts
+    self.container = self.cli.create_container(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/docker/api/container.py", line 439, in create_container
+    return self.create_container_from_config(config, name, platform)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/docker/api/container.py", line 456, in create_container_from_config
+    return self._result(res, True)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/docker/api/client.py", line 271, in _result
+    self._raise_for_status(response)
+  File "/home/airflow/.local/lib/python3.12/site-packages/docker/api/client.py", line 267, in _raise_for_status
+    raise create_api_error_from_http_exception(e) from e
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/docker/errors.py", line 39, in create_api_error_from_http_exception
+    raise cls(e, response=response, explanation=explanation) from e
+docker.errors.APIError: 400 Client Error for http+docker://localhost/v1.50/containers/create: Bad Request ("invalid mount config for type "bind": bind source path does not exist: /mnt/data/ProyectoSmart/ProyectoSmartMed")
+[2025-06-27T02:24:21.442+0000] {taskinstance.py:1206} INFO - Marking task as UP_FOR_RETRY. dag_id=STG4_MEDIDORES, task_id=run_hop_pipeline, run_id=scheduled__2025-06-27T01:21:00+00:00, execution_date=20250627T012100, start_date=20250627T022229, end_date=20250627T022421
+[2025-06-27T02:24:21.518+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 5 for task run_hop_pipeline (400 Client Error for http+docker://localhost/v1.50/containers/create: Bad Request ("invalid mount config for type "bind": bind source path does not exist: /mnt/data/ProyectoSmart/ProyectoSmartMed"); 73)
+[2025-06-27T02:24:21.654+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2025-06-27T02:24:21.885+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-06-27T02:24:21.920+0000] {local_task_job_runner.py:222} INFO - ::endgroup::
